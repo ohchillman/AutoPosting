@@ -313,9 +313,9 @@ class SettingsManager
      */
     private function saveSettingToDb(string $section, string $key, $value)
     {
-        $sql = "INSERT INTO settings (setting_group, setting_key, setting_value) 
+        $sql = "INSERT INTO settings (section, key_name, value) 
                 VALUES (:section, :key, :value)
-                ON DUPLICATE KEY UPDATE setting_value = :value";
+                ON DUPLICATE KEY UPDATE value = :value";
         
         $stmt = $this->db->prepare($sql);
         $stmt->execute([

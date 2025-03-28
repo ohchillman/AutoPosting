@@ -36,16 +36,9 @@ class AutomationController
         $status = $this->workflow->checkSystemStatus();
         
         // Формирование HTML-контента
-        $html = '<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Система автоматизации управления контентом</title>
-    <link rel="stylesheet" href="/vendor/bootstrap.min.css">
-</head>
-<body>
-    <div class="container mt-4">
+        $html = \App\Core\Templates\Layout::renderHeader('Система автоматизации управления контентом');
+        
+        $html .= '<div class="container mt-4">
         <h1>Система автоматизации управления контентом</h1>
         
         <div class="row mt-4">
@@ -167,16 +160,9 @@ class AutomationController
         $results = $this->workflow->run($keywords, $options);
         
         // Формирование HTML-контента с результатами
-        $html = '<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Результаты автоматизации</title>
-    <link rel="stylesheet" href="/vendor/bootstrap.min.css">
-</head>
-<body>
-    <div class="container mt-4">
+        $html = \App\Core\Templates\Layout::renderHeader('Результаты автоматизации');
+        
+        $html .= '<div class="container mt-4">
         <h1>Результаты автоматизации</h1>
         
         <div class="alert alert-info mt-4">
@@ -238,11 +224,9 @@ class AutomationController
         <div class="mt-4 mb-4">
             <a href="/" class="btn btn-primary">Вернуться на главную</a>
         </div>
-    </div>
-    
-    <script src="/vendor/bootstrap.bundle.min.js"></script>
-</body>
-</html>';
+    </div>';
+        
+        $html .= \App\Core\Templates\Layout::renderFooter();
         
         return $html;
     }
