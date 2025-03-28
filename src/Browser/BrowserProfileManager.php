@@ -95,7 +95,16 @@ class BrowserProfileManager
         try {
             $query = "SELECT * FROM browser_profiles";
             $stmt = $this->db->prepare($query);
-            $stmt->execute();
+            
+            if ($stmt === false) {
+                $this->logger->error('Failed to prepare statement for getting browser profiles');
+                return [];
+            }
+            
+            if (!$stmt->execute()) {
+                $this->logger->error('Failed to execute statement for getting browser profiles');
+                return [];
+            }
             
             return $stmt->fetchAll(\PDO::FETCH_ASSOC);
         } catch (\Exception $e) {
@@ -119,8 +128,21 @@ class BrowserProfileManager
         try {
             $query = "SELECT * FROM browser_profiles WHERE id = :id";
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-            $stmt->execute();
+            
+            if ($stmt === false) {
+                $this->logger->error('Failed to prepare statement for getting browser profile by ID', ['id' => $id]);
+                return null;
+            }
+            
+            if (!$stmt->bindParam(':id', $id, \PDO::PARAM_INT)) {
+                $this->logger->error('Failed to bind parameter for getting browser profile by ID', ['id' => $id]);
+                return null;
+            }
+            
+            if (!$stmt->execute()) {
+                $this->logger->error('Failed to execute statement for getting browser profile by ID', ['id' => $id]);
+                return null;
+            }
             
             $profile = $stmt->fetch(\PDO::FETCH_ASSOC);
             
@@ -154,13 +176,26 @@ class BrowserProfileManager
                       VALUES (:name, :browser_type, :profile_id, :social_account_id, :is_active)";
             
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':name', $profileData['name'], \PDO::PARAM_STR);
-            $stmt->bindParam(':browser_type', $profileData['browser_type'], \PDO::PARAM_STR);
-            $stmt->bindParam(':profile_id', $profileData['profile_id'], \PDO::PARAM_STR);
-            $stmt->bindParam(':social_account_id', $profileData['social_account_id'], \PDO::PARAM_INT);
-            $stmt->bindParam(':is_active', $profileData['is_active'], \PDO::PARAM_BOOL);
             
-            $stmt->execute();
+            if ($stmt === false) {
+                $this->logger->error('Failed to prepare statement for creating browser profile');
+                return null;
+            }
+            
+            if (!$stmt->bindParam(':name', $profileData['name'], \PDO::PARAM_STR) ||
+                !$stmt->bindParam(':browser_type', $profileData['browser_type'], \PDO::PARAM_STR) ||
+                !$stmt->bindParam(':profile_id', $profileData['profile_id'], \PDO::PARAM_STR) ||
+                !$stmt->bindParam(':social_account_id', $profileData['social_account_id'], \PDO::PARAM_INT) ||
+                !$stmt->bindParam(':is_active', $profileData['is_active'], \PDO::PARAM_BOOL)) {
+                
+                $this->logger->error('Failed to bind parameters for creating browser profile');
+                return null;
+            }
+            
+            if (!$stmt->execute()) {
+                $this->logger->error('Failed to execute statement for creating browser profile');
+                return null;
+            }
             
             $profileId = $this->db->lastInsertId();
             
@@ -197,15 +232,28 @@ class BrowserProfileManager
                       WHERE id = :id";
             
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-            $stmt->bindParam(':name', $profileData['name'], \PDO::PARAM_STR);
-            $stmt->bindParam(':browser_type', $profileData['browser_type'], \PDO::PARAM_STR);
-            $stmt->bindParam(':profile_id', $profileData['profile_id'], \PDO::PARAM_STR);
-            $stmt->bindParam(':social_account_id', $profileData['social_account_id'], \PDO::PARAM_INT);
-            $stmt->bindParam(':is_active', $profileData['is_active'], \PDO::PARAM_BOOL);
-            $stmt->bindParam(':last_used', $profileData['last_used'], \PDO::PARAM_STR);
             
-            $stmt->execute();
+            if ($stmt === false) {
+                $this->logger->error('Failed to prepare statement for updating browser profile', ['id' => $id]);
+                return false;
+            }
+            
+            if (!$stmt->bindParam(':id', $id, \PDO::PARAM_INT) ||
+                !$stmt->bindParam(':name', $profileData['name'], \PDO::PARAM_STR) ||
+                !$stmt->bindParam(':browser_type', $profileData['browser_type'], \PDO::PARAM_STR) ||
+                !$stmt->bindParam(':profile_id', $profileData['profile_id'], \PDO::PARAM_STR) ||
+                !$stmt->bindParam(':social_account_id', $profileData['social_account_id'], \PDO::PARAM_INT) ||
+                !$stmt->bindParam(':is_active', $profileData['is_active'], \PDO::PARAM_BOOL) ||
+                !$stmt->bindParam(':last_used', $profileData['last_used'], \PDO::PARAM_STR)) {
+                
+                $this->logger->error('Failed to bind parameters for updating browser profile', ['id' => $id]);
+                return false;
+            }
+            
+            if (!$stmt->execute()) {
+                $this->logger->error('Failed to execute statement for updating browser profile', ['id' => $id]);
+                return false;
+            }
             
             $this->logger->info('Browser profile updated successfully', ['id' => $id]);
             
@@ -232,8 +280,21 @@ class BrowserProfileManager
         try {
             $query = "DELETE FROM browser_profiles WHERE id = :id";
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-            $stmt->execute();
+            
+            if ($stmt === false) {
+                $this->logger->error('Failed to prepare statement for deleting browser profile', ['id' => $id]);
+                return false;
+            }
+            
+            if (!$stmt->bindParam(':id', $id, \PDO::PARAM_INT)) {
+                $this->logger->error('Failed to bind parameter for deleting browser profile', ['id' => $id]);
+                return false;
+            }
+            
+            if (!$stmt->execute()) {
+                $this->logger->error('Failed to execute statement for deleting browser profile', ['id' => $id]);
+                return false;
+            }
             
             $this->logger->info('Browser profile deleted successfully', ['id' => $id]);
             
