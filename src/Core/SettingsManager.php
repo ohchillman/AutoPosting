@@ -318,16 +318,32 @@ class SettingsManager
             $value = json_encode($value);
         }
         
-        $sql = "INSERT INTO settings (setting_group, setting_key, setting_value) 
-                VALUES (:section, :key, :value)
-                ON DUPLICATE KEY UPDATE setting_value = :value";
-        
-        $stmt = $this->db->prepare($sql);
-        $stmt->execute([
-            ':section' => $section,
-            ':key' => $key,
-            ':value' => $value
-        ]);
+        try {
+            // First check if the setting already exists
+            $checkSql = "SELECT id FROM settings WHERE setting_group = ? AND setting_key = ?";
+            $checkStmt = $this->db->prepare($checkSql);
+            $checkStmt->execute([$section, $key]);
+            $exists = $checkStmt->fetch();
+            
+            if ($exists) {
+                // Update existing setting
+                $sql = "UPDATE settings SET setting_value = ? WHERE setting_group = ? AND setting_key = ?";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute([$value, $section, $key]);
+            } else {
+                // Insert new setting
+                $sql = "INSERT INTO settings (setting_group, setting_key, setting_value) VALUES (?, ?, ?)";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute([$section, $key, $value]);
+            }
+        } catch (Exception $e) {
+            $this->logger->error('Error in saveSettingToDb', [
+                'section' => $section,
+                'key' => $key,
+                'error' => $e->getMessage()
+            ]);
+            throw $e;
+        }
     }
     
     /**
