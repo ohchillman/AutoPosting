@@ -32,24 +32,55 @@ class NewsParserManager
     private function initParsers()
     {
         try {
-            // Получаем список источников из конфигурации
-            $sources = [
-                [
-                    'name' => 'Source1',
-                    'url' => $_ENV['PARSER_SOURCE_1'] ?? 'https://example.com/news',
-                    'parser' => 'Source1NewsParser'
-                ],
-                // Можно добавить другие источники при необходимости
-            ];
+            // Получаем список источников из настроек
+            $settingsManager = new \App\Core\SettingsManager();
+            $parserSources = $settingsManager->get('parser.sources', []);
+            
+            // Если источники не найдены в настройках, используем значения из .env
+            if (empty($parserSources) || !is_array($parserSources)) {
+                $parserSources = [
+                    $_ENV['PARSER_SOURCE_1'] ?? 'https://example.com/news',
+                    $_ENV['PARSER_SOURCE_2'] ?? 'https://example2.com/news',
+                    $_ENV['PARSER_SOURCE_3'] ?? 'https://example3.com/news',
+                    $_ENV['PARSER_SOURCE_4'] ?? 'https://example4.com/news',
+                ];
+            }
+            
+            // Создаем массив источников для инициализации парсеров
+            $sources = [];
+            foreach ($parserSources as $index => $url) {
+                if (!empty($url) && $url !== 'https://example.com/news' && $url !== 'https://example2.com/news' && 
+                    $url !== 'https://example3.com/news' && $url !== 'https://example4.com/news') {
+                    $sources[] = [
+                        'name' => 'Source' . ($index + 1),
+                        'url' => $url,
+                        'parser' => 'GenericNewsParser' // Используем универсальный парсер для всех источников
+                    ];
+                }
+            }
+            
+            // Если нет действительных источников, добавляем тестовый источник для демонстрации
+            if (empty($sources)) {
+                $this->logger->warning('No valid news sources found, adding demo source');
+                $sources[] = [
+                    'name' => 'DemoSource',
+                    'url' => 'https://example.com/news',
+                    'parser' => 'DemoNewsParser'
+                ];
+            }
+            
+            $this->logger->info('Initializing parsers', ['sources_count' => count($sources)]);
             
             foreach ($sources as $source) {
+                // Проверяем существование класса парсера, иначе используем демо-парсер
                 $parserClass = "\\App\\Parsers\\" . $source['parser'];
-                if (class_exists($parserClass)) {
-                    $this->parsers[$source['name']] = new $parserClass($source['url']);
-                    $this->logger->info('Parser initialized', ['source' => $source['name']]);
-                } else {
-                    $this->logger->warning('Parser class not found', ['class' => $parserClass]);
+                if (!class_exists($parserClass)) {
+                    $this->logger->warning('Parser class not found, using demo parser', ['class' => $parserClass]);
+                    $parserClass = "\\App\\Parsers\\DemoNewsParser";
                 }
+                
+                $this->parsers[$source['name']] = new $parserClass($source['url']);
+                $this->logger->info('Parser initialized', ['source' => $source['name'], 'url' => $source['url']]);
             }
         } catch (\Exception $e) {
             $this->logger->error('Error initializing parsers', ['error' => $e->getMessage()]);
