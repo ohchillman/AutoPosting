@@ -27,13 +27,22 @@ class Database
     private $logger;
     
     /**
+     * @var bool Флаг успешного соединения с базой данных
+     */
+    private $isConnected = false;
+    
+    /**
      * Приватный конструктор для реализации паттерна Singleton
      */
     private function __construct()
     {
         $this->config = Config::getInstance();
         $this->logger = LogManager::getInstance();
-        $this->connect();
+        $this->isConnected = $this->connect();
+        
+        if (!$this->isConnected) {
+            $this->logger->error('Failed to establish database connection in constructor');
+        }
     }
     
     /**
@@ -48,6 +57,28 @@ class Database
         }
         
         return self::$instance;
+    }
+    
+    /**
+     * Проверка соединения с базой данных
+     * 
+     * @return bool
+     */
+    public function isConnected(): bool
+    {
+        return $this->isConnected && $this->connection !== null;
+    }
+    
+    /**
+     * Повторная попытка соединения с базой данных
+     * 
+     * @return bool Результат операции
+     */
+    public function reconnect(): bool
+    {
+        $this->logger->info('Attempting to reconnect to database');
+        $this->isConnected = $this->connect();
+        return $this->isConnected;
     }
     
     /**
@@ -74,11 +105,19 @@ class Database
             
             $this->connection = new \PDO($dsn, $username, $password, $options);
             
-            $this->logger->info('Database connection established');
+            $this->logger->info('Database connection established', [
+                'host' => $host,
+                'database' => $dbname
+            ]);
             
             return true;
         } catch (\PDOException $e) {
-            $this->logger->error('Database connection failed', ['error' => $e->getMessage()]);
+            $this->logger->error('Database connection failed', [
+                'error' => $e->getMessage(),
+                'host' => $host ?? 'unknown',
+                'database' => $dbname ?? 'unknown'
+            ]);
+            $this->connection = null;
             return false;
         }
     }
@@ -91,6 +130,13 @@ class Database
      */
     public function prepare(string $sql)
     {
+        if (!$this->isConnected()) {
+            $this->logger->error('Cannot prepare statement: No database connection');
+            if (!$this->reconnect()) {
+                return false;
+            }
+        }
+        
         try {
             return $this->connection->prepare($sql);
         } catch (\PDOException $e) {
@@ -112,6 +158,13 @@ class Database
      */
     public function query(string $sql, array $params = [])
     {
+        if (!$this->isConnected()) {
+            $this->logger->error('Cannot execute query: No database connection');
+            if (!$this->reconnect()) {
+                return false;
+            }
+        }
+        
         try {
             $stmt = $this->connection->prepare($sql);
             $stmt->execute($params);
@@ -196,6 +249,13 @@ class Database
      */
     public function insert(string $table, array $data)
     {
+        if (!$this->isConnected()) {
+            $this->logger->error('Cannot insert data: No database connection');
+            if (!$this->reconnect()) {
+                return false;
+            }
+        }
+        
         $fields = array_keys($data);
         $placeholders = array_map(function($field) {
             return ':' . $field;
@@ -228,6 +288,13 @@ class Database
      */
     public function update(string $table, array $data, string $where, array $whereParams = [])
     {
+        if (!$this->isConnected()) {
+            $this->logger->error('Cannot update data: No database connection');
+            if (!$this->reconnect()) {
+                return false;
+            }
+        }
+        
         $fields = array_keys($data);
         $set = array_map(function($field) {
             return $field . ' = :' . $field;
@@ -261,6 +328,13 @@ class Database
      */
     public function delete(string $table, string $where, array $params = [])
     {
+        if (!$this->isConnected()) {
+            $this->logger->error('Cannot delete data: No database connection');
+            if (!$this->reconnect()) {
+                return false;
+            }
+        }
+        
         $sql = sprintf('DELETE FROM %s WHERE %s', $table, $where);
         
         $stmt = $this->query($sql, $params);
@@ -279,6 +353,13 @@ class Database
      */
     public function beginTransaction(): bool
     {
+        if (!$this->isConnected()) {
+            $this->logger->error('Cannot begin transaction: No database connection');
+            if (!$this->reconnect()) {
+                return false;
+            }
+        }
+        
         try {
             return $this->connection->beginTransaction();
         } catch (\PDOException $e) {
@@ -294,6 +375,11 @@ class Database
      */
     public function commit(): bool
     {
+        if (!$this->isConnected()) {
+            $this->logger->error('Cannot commit transaction: No database connection');
+            return false;
+        }
+        
         try {
             return $this->connection->commit();
         } catch (\PDOException $e) {
@@ -309,6 +395,11 @@ class Database
      */
     public function rollBack(): bool
     {
+        if (!$this->isConnected()) {
+            $this->logger->error('Cannot rollback transaction: No database connection');
+            return false;
+        }
+        
         try {
             return $this->connection->rollBack();
         } catch (\PDOException $e) {
@@ -324,6 +415,10 @@ class Database
      */
     public function inTransaction(): bool
     {
+        if (!$this->isConnected()) {
+            return false;
+        }
+        
         return $this->connection->inTransaction();
     }
     
@@ -334,6 +429,11 @@ class Database
      */
     public function lastInsertId(): string
     {
+        if (!$this->isConnected()) {
+            $this->logger->error('Cannot get last insert ID: No database connection');
+            return '0';
+        }
+        
         return $this->connection->lastInsertId();
     }
     
