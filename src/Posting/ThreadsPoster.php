@@ -109,7 +109,7 @@ class ThreadsPoster extends AbstractSocialMediaPoster
             // Отправка запроса к API Dolphin Anty
             $response = $this->client->post($this->apiBaseUrl . '/browser_profiles/start_automation', [
                 'headers' => [
-                    'Authorization': 'Bearer ' . $this->apiKey,
+                    'Authorization' => 'Bearer ' . $this->apiKey,
                     'Content-Type' => 'application/json'
                 ],
                 'json' => $data
@@ -178,7 +178,7 @@ class ThreadsPoster extends AbstractSocialMediaPoster
                 // Запрос статуса задачи
                 $response = $this->client->get($this->apiBaseUrl . '/automation_tasks/' . $taskId, [
                     'headers' => [
-                        'Authorization': 'Bearer ' . $this->apiKey
+                        'Authorization' => 'Bearer ' . $this->apiKey
                     ]
                 ]);
                 
@@ -243,7 +243,7 @@ class ThreadsPoster extends AbstractSocialMediaPoster
             // Запрос информации о профиле
             $response = $this->client->get($this->apiBaseUrl . '/browser_profiles/' . $this->profileId, [
                 'headers' => [
-                    'Authorization': 'Bearer ' . $this->apiKey
+                    'Authorization' => 'Bearer ' . $this->apiKey
                 ]
             ]);
             
@@ -289,7 +289,7 @@ class ThreadsPoster extends AbstractSocialMediaPoster
             // Запрос информации о профиле
             $response = $this->client->get($this->apiBaseUrl . '/browser_profiles/' . $this->profileId, [
                 'headers' => [
-                    'Authorization': 'Bearer ' . $this->apiKey
+                    'Authorization' => 'Bearer ' . $this->apiKey
                 ]
             ]);
             
