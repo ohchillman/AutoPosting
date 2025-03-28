@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Система автоматизации постинга</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .feature-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .feature-item {
+            flex: 1 1 300px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+        }
+        .feature-item h3 {
+            margin-top: 0;
+            color: #3498db;
+            border-bottom: none;
+        }
+        .nav {
+            display: flex;
+            background-color: #2c3e50;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .nav-item {
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Система автоматизации постинга с антидетект браузерами</h1>
+        
+        <div class="nav">
+            <a href="index.html" class="nav-item active">Главная</a>
+            <a href="settings.html" class="nav-item">Настройки</a>
+            <a href="profiles.html" class="nav-item">Профили</a>
+            <a href="content.html" class="nav-item">Контент</a>
+            <a href="posting.html" class="nav-item">Постинг</a>
+            <a href="monitoring.html" class="nav-item">Мониторинг</a>
+        </div>
+        
+        <div class="card">
+            <h2>Добро пожаловать в систему автоматизации постинга</h2>
+            
+            <div class="alert alert-info">
+                Эта система предназначена для автоматизации постинга контента в социальные сети через антидетект браузеры. Система поддерживает работу с AdsPower, Dolphin Anty и Octo Browser.
+            </div>
+            
+            <p>Система автоматизации постинга позволяет управлять контентом и публикациями в социальных сетях через профили антидетект браузеров. Вы можете настроить автоматический парсинг новостей, рерайт контента и публикацию в различные социальные сети.</p>
+            
+            <h3>Основные возможности</h3>
+            
+            <div class="feature-list">
+                <div class="feature-item">
+                    <h3>Поддержка антидетект браузеров</h3>
+                    <p>Система работает с тремя популярными антидетект браузерами:</p>
+                    <ul>
+                        <li>AdsPower</li>
+                        <li>Dolphin Anty</li>
+                        <li>Octo Browser</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-item">
+                    <h3>Поддержка социальных сетей</h3>
+                    <p>Автоматизация постинга в популярные социальные сети:</p>
+                    <ul>
+                        <li>Twitter</li>
+                        <li>LinkedIn</li>
+                        <li>YouTube Blog</li>
+                        <li>Threads</li>
+                    </ul>
+                </div>
+                
+                <div class="feature-item">
+                    <h3>Парсинг новостей</h3>
+                    <p>Автоматический сбор новостей из различных источников с возможностью фильтрации по ключевым словам.</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h3>Рерайт контента</h3>
+                    <p>Автоматический рерайт контента с использованием OpenAI API для создания уникальных публикаций для каждого аккаунта.</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h3>Управление профилями</h3>
+                    <p>Удобное управление профилями антидетект браузеров, включая синхронизацию, создание и редактирование.</p>
+                </div>
+                
+                <div class="feature-item">
+                    <h3>Мониторинг активности</h3>
+                    <p>Отслеживание активности публикаций, статистика и аналитика эффективности постов.</p>
+                </div>
+            </div>
+            
+            <h3>Начало работы</h3>
+            
+            <p>Для начала работы с системой выполните следующие шаги:</p>
+            
+            <ol>
+                <li>Перейдите в раздел <a href="settings.html">Настройки</a> и настройте подключение к антидетект браузерам и API.</li>
+                <li>В разделе <a href="profiles.html">Профили</a> настройте профили браузеров для каждой социальной сети.</li>
+                <li>Настройте источники контента в разделе <a href="content.html">Контент</a>.</li>
+                <li>Настройте расписание публикаций в разделе <a href="posting.html">Постинг</a>.</li>
+                <li>Отслеживайте результаты в разделе <a href="monitoring.html">Мониторинг</a>.</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>

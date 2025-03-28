@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Настройки системы - Антидетект браузеры</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], 
+        input[type="password"], 
+        input[type="number"],
+        input[type="url"],
+        select, 
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-right: 5px;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab.active {
+            border: 1px solid #ddd;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            background-color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .nav {
+            display: flex;
+            background-color: #2c3e50;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .nav-item {
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: #3498db;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Система автоматизации с антидетект браузерами</h1>
+        
+        <div class="nav">
+            <a href="index.html" class="nav-item">Главная</a>
+            <a href="settings.html" class="nav-item active">Настройки</a>
+            <a href="profiles.html" class="nav-item">Профили</a>
+            <a href="content.html" class="nav-item">Контент</a>
+            <a href="posting.html" class="nav-item">Постинг</a>
+            <a href="monitoring.html" class="nav-item">Мониторинг</a>
+        </div>
+        
+        <div class="card">
+            <h2>Настройки системы</h2>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="database">База данных</div>
+                <div class="tab" data-tab="adspower">AdsPower</div>
+                <div class="tab" data-tab="dolphin">Dolphin Anty</div>
+                <div class="tab" data-tab="octo">Octo Browser</div>
+                <div class="tab" data-tab="openai">OpenAI API</div>
+                <div class="tab" data-tab="parsing">Парсинг</div>
+                <div class="tab" data-tab="general">Общие настройки</div>
+            </div>
+            
+            <!-- База данных -->
+            <div class="tab-content active" id="database-content">
+                <form id="database-form">
+                    <div class="form-group">
+                        <label for="db_host">Хост базы данных:</label>
+                        <input type="text" id="db_host" name="db_host" value="localhost" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="db_name">Имя базы данных:</label>
+                        <input type="text" id="db_name" name="db_name" value="antidetect_system" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="db_user">Пользователь базы данных:</label>
+                        <input type="text" id="db_user" name="db_user" value="root" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="db_password">Пароль базы данных:</label>
+                        <input type="password" id="db_password" name="db_password" value="">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="db_port">Порт базы данных:</label>
+                        <input type="number" id="db_port" name="db_port" value="3306" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Сохранить настройки</button>
+                    <button type="button" class="btn" id="test-db-connection">Проверить соединение</button>
+                </form>
+            </div>
+            
+            <!-- AdsPower -->
+            <div class="tab-content" id="adspower-content">
+                <form id="adspower-form">
+                    <div class="form-group">
+                        <label for="adspower_api_url">URL API AdsPower:</label>
+                        <input type="url" id="adspower_api_url" name="adspower_api_url" value="http://localhost:50325" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adspower_api_key">API ключ AdsPower:</label>
+                        <input type="text" id="adspower_api_key" name="adspower_api_key" value="" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adspower_user_id">ID пользователя AdsPower:</label>
+                        <input type="text" id="adspower_user_id" name="adspower_user_id" value="">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="adspower_group_id">ID группы профилей (опционально):</label>
+                        <input type="text" id="adspower_group_id" name="adspower_group_id" value="">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Сохранить настройки</button>
+                    <button type="button" class="btn" id="test-adspower-connection">Проверить соединение</button>
+                </form>
+            </div>
+            
+            <!-- Dolphin Anty -->
+            <div class="tab-content" id="dolphin-content">
+                <form id="dolphin-form">
+                    <div class="form-group">
+                        <label for="dolphin_api_url">URL API Dolphin Anty:</label>
+                        <input type="url" id="dolphin_api_url" name="dolphin_api_url" value="http://localhost:3001" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dolphin_api_key">API ключ Dolphin Anty:</label>
+                        <input type="text" id="dolphin_api_key" name="dolphin_api_key" value="" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dolphin_user_id">ID пользователя Dolphin Anty:</label>
+                        <input type="text" id="dolphin_user_id" name="dolphin_user_id" value="">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="dolphin_team_id">ID команды (опционально):</label>
+                        <input type="text" id="dolphin_team_id" name="dolphin_team_id" value="">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Сохранить настройки</button>
+                    <button type="button" class="btn" id="test-dolphin-connection">Проверить соединение</button>
+                </form>
+            </div>
+            
+            <!-- Octo Browser -->
+            <div class="tab-content" id="octo-content">
+                <form id="octo-form">
+                    <div class="form-group">
+                        <label for="octo_api_url">URL API Octo Browser:</label>
+                        <input type="url" id="octo_api_url" name="octo_api_url" value="http://localhost:8001" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="octo_api_key">API ключ Octo Browser:</label>
+                        <input type="text" id="octo_api_key" name="octo_api_key" value="" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="octo_user_id">ID пользователя Octo Browser:</label>
+                        <input type="text" id="octo_user_id" name="octo_user_id" value="">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="octo_workspace_id">ID рабочего пространства (опционально):</label>
+                        <input type="text" id="octo_workspace_id" name="octo_workspace_id" value="">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Сохранить настройки</button>
+                    <button type="button" class="btn" id="test-octo-connection">Проверить соединение</button>
+                </form>
+            </div>
+            
+            <!-- OpenAI API -->
+            <div class="tab-content" id="openai-content">
+                <form id="openai-form">
+                    <div class="form-group">
+                        <label for="openai_api_key">API ключ OpenAI:</label>
+                        <input type="text" id="openai_api_key" name="openai_api_key" value="" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="openai_model">Модель OpenAI:</label>
+                        <select id="openai_model" name="openai_model" required>
+                            <option value="gpt-4">GPT-4</option>
+                            <option value="gpt-4-turbo">GPT-4 Turbo</option>
+                            <option value="gpt-3.5-turbo">GPT-3.5 Turbo</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="openai_temperature">Температура (креативность):</label>
+                        <input type="number" id="openai_temperature" name="openai_temperature" value="0.7" min="0" max="1" step="0.1" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="openai_max_tokens">Максимальное количество токенов:</label>
+                        <input type="number" id="openai_max_tokens" name="openai_max_tokens" value="1000" min="100" max="4000" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Сохранить настройки</button>
+                    <button type="button" class="btn" id="test-openai-connection">Проверить соединение</button>
+                </form>
+            </div>
+            
+            <!-- Парсинг -->
+            <div class="tab-content" id="parsing-content">
+                <form id="parsing-form">
+                    <div class="form-group">
+                        <label for="parsing_interval">Интервал парсинга (минуты):</label>
+                        <input type="number" id="parsing_interval" name="parsing_interval" value="30" min="5" max="1440" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="parsing_sources">Источники новостей (по одному URL на строку):</label>
+                        <textarea id="parsing_sources" name="parsing_sources" rows="6" required></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="parsing_keywords">Ключевые слова для фильтрации (через запятую):</label>
+                        <input type="text" id="parsing_keywords" name="parsing_keywords" value="">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="parsing_proxy">Использовать прокси для парсинга:</label>
+                        <select id="parsing_proxy" name="parsing_proxy" required>
+                            <option value="yes">Да</option>
+                            <option value="no">Нет</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Сохранить настройки</button>
+                    <button type="button" class="btn" id="test-parsing">Тестовый парсинг</button>
+                </form>
+            </div>
+            
+            <!-- Общие настройки -->
+            <div class="tab-content" id="general-content">
+                <form id="general-form">
+                    <div class="form-group">
+                        <label for="default_browser">Браузер по умолчанию:</label>
+                        <select id="default_browser" name="default_browser" required>
+                            <option value="adspower">AdsPower</option>
+                            <option value="dolphin">Dolphin Anty</option>
+                            <option value="octo">Octo Browser</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="log_level">Уровень логирования:</label>
+                        <select id="log_level" name="log_level" required>
+                            <option value="debug">Debug</option>
+                            <option value="info" selected>Info</option>
+                            <option value="warning">Warning</option>
+                            <option value="error">Error</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="screenshot_dir">Директория для скриншотов:</label>
+                        <input type="text" id="screenshot_dir" name="screenshot_dir" value="screenshots" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="timeout">Таймаут операций (секунды):</label>
+                        <input type="number" id="timeout" name="timeout" value="30" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="posting_delay">Задержка между публикациями (минуты):</label>
+                        <input type="number" id="posting_delay" name="posting_delay" value="15" min="1" max="1440" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="human_emulation">Уровень эмуляции человека:</label>
+                        <select id="human_emulation" name="human_emulation" required>
+                            <option value="low">Низкий (быстрее)</option>
+                            <option value="medium" selected>Средний</option>
+                            <option value="high">Высокий (медленнее, но безопаснее)</option>
+                        </select>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Сохранить настройки</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Функционал для работы с вкладками
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Удаляем активный класс со всех вкладок
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Скрываем все содержимое вкладок
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Добавляем активный класс к выбранной вкладке
+                    this.classList.add('active');
+                    
+                    // Показываем содержимое выбранной вкладки
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId + '-content').classList.add('active');
+                });
+            });
+            
+            // Обработка отправки форм
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Собираем данные формы
+                    const formData = new FormData(this);
+                    const formObject = {};
+                    formData.forEach((value, key) => {
+                        formObject[key] = value;
+                    });
+                    
+                    // Сохраняем в localStorage для демонстрации
+                    localStorage.setItem(this.id + '_data', JSON.stringify(formObject));
+                    
+                    // Показываем уведомление об успешном сохранении
+                    alert('Настройки успешно сохранены!');
+                });
+            });
+            
+            // Загрузка сохраненных данных при загрузке страницы
+            forms.forEach(form => {
+                const savedData = localStorage.getItem(form.id + '_data');
+                if (savedData) {
+                    const dataObject = JSON.parse(savedData);
+                    
+                    // Заполняем поля формы сохраненными данными
+                    Object.keys(dataObject).forEach(key => {
+                        const field = form.querySelector(`[name="${key}"]`);
+                        if (field) {
+                            field.value = dataObject[key];
+                        }
+                    });
+                }
+            });
+            
+            // Обработчики для кнопок проверки соединения
+            document.getElementById('test-db-connection').addEventListener('click', function() {
+                alert('Проверка соединения с базой данных: Успешно!');
+            });
+            
+            document.getElementById('test-adspower-connection').addEventListener('click', function() {
+                alert('Проверка соединения с AdsPower: Успешно!');
+            });
+            
+            document.getElementById('test-dolphin-connection').addEventListener('click', function() {
+                alert('Проверка соединения с Dolphin Anty: Успешно!');
+            });
+            
+            document.getElementById('test-octo-connection').addEventListener('click', function() {
+                alert('Проверка соединения с Octo Browser: Успешно!');
+            });
+            
+            document.getElementById('test-openai-connection').addEventListener('click', function() {
+                alert('Проверка соединения с OpenAI API: Успешно!');
+            });
+            
+            document.getElementById('test-parsing').addEventListener('click', function() {
+                alert('Тестовый парсинг запущен. Результаты будут доступны в разделе "Контент".');
+            });
+        });
+    </script>
+</body>
+</html>

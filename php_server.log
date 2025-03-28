@@ -1,0 +1,4 @@
+[Fri Mar 28 13:56:38 2025] PHP 8.1.2-1ubuntu2.20 Development Server (http://0.0.0.0:8080) started
+[Fri Mar 28 13:57:27 2025] 127.0.0.1:56938 Accepted
+[Fri Mar 28 13:57:27 2025] 127.0.0.1:56938 [200]: GET /phpinfo.php
+[Fri Mar 28 13:57:27 2025] 127.0.0.1:56938 Closing

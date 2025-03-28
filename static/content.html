@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Контент - Система автоматизации постинга</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], 
+        input[type="password"], 
+        input[type="number"],
+        input[type="url"],
+        select, 
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-right: 5px;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab.active {
+            border: 1px solid #ddd;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            background-color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .nav {
+            display: flex;
+            background-color: #2c3e50;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .nav-item {
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            color: white;
+        }
+        .edit-btn {
+            background-color: #3498db;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+        .preview-btn {
+            background-color: #2ecc71;
+        }
+        .content-preview {
+            background-color: #f9f9f9;
+            border: 1px solid #ddd;
+            padding: 15px;
+            border-radius: 4px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Система автоматизации постинга с антидетект браузерами</h1>
+        
+        <div class="nav">
+            <a href="index.html" class="nav-item">Главная</a>
+            <a href="settings.html" class="nav-item">Настройки</a>
+            <a href="profiles.html" class="nav-item">Профили</a>
+            <a href="content.html" class="nav-item active">Контент</a>
+            <a href="posting.html" class="nav-item">Постинг</a>
+            <a href="monitoring.html" class="nav-item">Мониторинг</a>
+        </div>
+        
+        <div class="card">
+            <h2>Управление контентом</h2>
+            
+            <div class="alert alert-info">
+                В этом разделе вы можете управлять источниками контента, настраивать парсинг новостей и создавать шаблоны для рерайта.
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="sources">Источники</div>
+                <div class="tab" data-tab="parser">Парсер</div>
+                <div class="tab" data-tab="content">Контент</div>
+                <div class="tab" data-tab="templates">Шаблоны</div>
+            </div>
+            
+            <!-- Источники -->
+            <div class="tab-content active" id="sources-content">
+                <div class="form-group">
+                    <button id="add-source" class="btn btn-success">Добавить источник</button>
+                    <button id="refresh-sources" class="btn">Обновить список</button>
+                </div>
+                
+                <table id="sources-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>URL</th>
+                            <th>Категория</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Источники будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Парсер -->
+            <div class="tab-content" id="parser-content">
+                <div class="form-group">
+                    <button id="start-parsing" class="btn btn-success">Запустить парсинг</button>
+                    <button id="stop-parsing" class="btn btn-danger">Остановить парсинг</button>
+                    <button id="schedule-parsing" class="btn">Настроить расписание</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="parsing-keywords">Ключевые слова для фильтрации (через запятую):</label>
+                    <input type="text" id="parsing-keywords" name="parsing-keywords" placeholder="blockchain, AI, crypto, technology">
+                </div>
+                
+                <div class="form-group">
+                    <label for="parsing-categories">Категории для парсинга:</label>
+                    <select id="parsing-categories" name="parsing-categories" multiple>
+                        <option value="technology">Технологии</option>
+                        <option value="business">Бизнес</option>
+                        <option value="finance">Финансы</option>
+                        <option value="crypto">Криптовалюты</option>
+                        <option value="ai">Искусственный интеллект</option>
+                    </select>
+                </div>
+                
+                <h3>Журнал парсинга</h3>
+                <div id="parsing-log" style="max-height: 300px; overflow-y: auto; background-color: #f5f5f5; padding: 10px; border-radius: 4px; font-family: monospace;">
+                    <!-- Журнал парсинга будет добавлен через JavaScript -->
+                </div>
+            </div>
+            
+            <!-- Контент -->
+            <div class="tab-content" id="content-content">
+                <div class="form-group">
+                    <button id="add-content" class="btn btn-success">Добавить контент вручную</button>
+                    <button id="refresh-content" class="btn">Обновить список</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content-filter">Фильтр:</label>
+                    <select id="content-filter" name="content-filter">
+                        <option value="all">Все</option>
+                        <option value="pending">Ожидает публикации</option>
+                        <option value="published">Опубликовано</option>
+                        <option value="rejected">Отклонено</option>
+                    </select>
+                </div>
+                
+                <table id="content-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Заголовок</th>
+                            <th>Источник</th>
+                            <th>Дата создания</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Контент будет добавлен через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Шаблоны -->
+            <div class="tab-content" id="templates-content">
+                <div class="form-group">
+                    <button id="add-template" class="btn btn-success">Добавить шаблон</button>
+                    <button id="refresh-templates" class="btn">Обновить список</button>
+                </div>
+                
+                <table id="templates-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Социальная сеть</th>
+                            <th>Тон</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Шаблоны будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для добавления/редактирования источника -->
+    <div id="source-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="source-modal-title">Добавить источник</h2>
+            
+            <form id="source-form">
+                <input type="hidden" id="source-id" name="source-id" value="">
+                
+                <div class="form-group">
+                    <label for="source-name">Название источника:</label>
+                    <input type="text" id="source-name" name="source-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="source-url">URL источника:</label>
+                    <input type="url" id="source-url" name="source-url" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="source-category">Категория:</label>
+                    <select id="source-category" name="source-category" required>
+                        <option value="technology">Технологии</option>
+                        <option value="business">Бизнес</option>
+                        <option value="finance">Финансы</option>
+                        <option value="crypto">Криптовалюты</option>
+                        <option value="ai">Искусственный интеллект</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="source-status">Статус:</label>
+                    <select id="source-status" name="source-status" required>
+                        <option value="active">Активен</option>
+                        <option value="inactive">Неактивен</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="source-selector">CSS селектор для новостей:</label>
+                    <input type="text" id="source-selector" name="source-selector" placeholder=".news-item">
+                </div>
+                
+                <div class="form-group">
+                    <label for="source-notes">Примечания:</label>
+                    <textarea id="source-notes" name="source-notes"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Сохранить</button>
+                <button type="button" class="btn" id="cancel-source">Отмена</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для добавления/редактирования контента -->
+    <div id="content-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="content-modal-title">Добавить контент</h2>
+            
+            <form id="content-form">
+                <input type="hidden" id="content-id" name="content-id" value="">
+                
+                <div class="form-group">
+                    <label for="content-title">Заголовок:</label>
+                    <input type="text" id="content-title" name="content-title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content-text">Текст:</label>
+                    <textarea id="content-text" name="content-text" rows="6" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content-source">Источник:</label>
+                    <select id="content-source" name="content-source">
+                        <option value="manual">Ручной ввод</option>
+                        <!-- Источники будут добавлены через JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content-status">Статус:</label>
+                    <select id="content-status" name="content-status" required>
+                        <option value="pending">Ожидает публикации</option>
+                        <option value="published">Опубликовано</option>
+                        <option value="rejected">Отклонено</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="content-category">Категория:</label>
+                    <select id="content-category" name="content-category" required>
+                        <option value="technology">Технологии</option>
+                        <option value="business">Бизнес</option>
+                        <option value="finance">Финансы</option>
+                        <option value="crypto">Криптовалюты</option>
+                        <option value="ai">Искусственный интеллект</option>
+                    </select>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Сохранить</button>
+                <button type="button" class="btn" id="cancel-content">Отмена</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для добавления/редактирования шаблона -->
+    <div id="template-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="template-modal-title">Добавить шаблон</h2>
+            
+            <form id="template-form">
+                <input type="hidden" id="template-id" name="template-id" value="">
+                
+                <div class="form-group">
+                    <label for="template-name">Название шаблона:</label>
+                    <input type="text" id="template-name" name="template-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="template-social">Социальная сеть:</label>
+                    <select id="template-social" name="template-social" required>
+                        <option value="twitter">Twitter</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="youtube">YouTube Blog</option>
+                        <option value="threads">Threads</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="template-tone">Тон сообщения:</label>
+                    <select id="template-tone" name="template-tone" required>
+                        <option value="professional">Профессиональный</option>
+                        <option value="casual">Повседневный</option>
+                        <option value="enthusiastic">Восторженный</option>
+                        <option value="informative">Информативный</option>
+                        <option value="humorous">Юмористический</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="template-text">Шаблон текста:</label>
+                    <textarea id="template-text" name="template-text" rows="6" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="template-variables">Доступные переменные:</label>
+                    <div style="background-color: #f5f5f5; padding: 10px; border-radius: 4px; font-family: monospace;">
+                        {title} - заголовок новости<br>
+                        {content} - текст новости<br>
+                        {source} - источник новости<br>
+                        {url} - ссылка на новость<br>
+                        {date} - дата публикации<br>
+                        {hashtags} - хэштеги
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="template-preview">Предпросмотр:</label>
+                    <div id="template-preview" class="content-preview">
+                        <!-- Предпросмотр шаблона будет добавлен через JavaScript -->
+                    </div>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Сохранить</button>
+                <button type="button" class="btn" id="cancel-template">Отмена</button>
+                <button type="button" class="btn" id="preview-template">Предпросмотр</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Функционал для работы с вкладками
+            const tabs = document.querySelectorAll('.tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Удаляем активный класс со всех вкладок
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Скрываем все содержимое вкладок
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Добавляем активный класс к выбранной вкладке
+                    this.classList.add('active');
+                    
+                    // Показываем содержимое выбранной вкладки
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId + '-content').classList.add('active');
+                });
+            });
+            
+            // Модальные окна
+            const sourceModal = document.getElementById('source-modal');
+            const contentModal = document.getElementById('content-modal');
+            const templateModal = document.getElementById('template-modal');
+            
+            // Закрытие модальных окон
+            document.querySelectorAll('.close, #cancel-source, #cancel-content, #cancel-template').forEach(element => {
+                element.addEventListener('click', function() {
+                    sourceModal.style.display = 'none';
+                    contentModal.style.display = 'none';
+                    templateModal.style.display = 'none';
+                });
+            });
+            
+            // Закрытие модальных окон при клике вне их области
+            window.addEventListener('click', function(event) {
+                if (event.target === sourceModal) {
+                    sourceModal.style.display = 'none';
+                }
+                if (event.target === contentModal) {
+                    contentModal.style.display = 'none';
+                }
+                if (event.target === templateModal) {
+                    templateModal.style.display = 'none';
+                }
+            });
+            
+            // Открытие модальных окон
+            document.getElementById('add-source').addEventListener('click', function() {
+                document.getElementById('source-modal-title').textContent = 'Добавить источник';
+                document.getElementById('source-form').reset();
+                document.getElementById('source-id').value = '';
+                sourceModal.style.display = 'block';
+            });
+            
+            document.getElementById('add-content').addEventListener('click', function() {
+                document.getElementById('content-modal-title').textContent = 'Добавить контент';
+                document.getElementById('content-form').reset();
+                document.getElementById('content-id').value = '';
+                contentModal.style.display = 'block';
+            });
+            
+            document.getElementById('add-template').addEventListener('click', function() {
+                document.getElementById('template-modal-title').textContent = 'Добавить шаблон';
+                document.getElementById('template-form').reset();
+                document.getElementById('template-id').value = '';
+                templateModal.style.display = 'block';
+            });
+            
+            // Обработка отправки форм
+            document.getElementById('source-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Сохранение источника
+                const sourceId = document.getElementById('source-id').value || Date.now().toString();
+                const sourceName = document.getElementById('source-name').value;
+                const sourceUrl = document.getElementById('source-url').value;
+                const sourceCategory = document.getElementById('source-category').value;
+                const sourceStatus = document.getElementById('source-status').value;
+                const sourceSelector = document.getElementById('source-selector').value;
+                const sourceNotes = document.getElementById('source-notes').value;
+                
+                // Создаем объект источника
+                const source = {
+                    id: sourceId,
+                    name: sourceName,
+                    url: sourceUrl,
+                    category: sourceCategory,
+                    status: sourceStatus,
+                    selector: sourceSelector,
+                    notes: sourceNotes
+                };
+                
+                // Сохраняем источник в localStorage
+                saveSource(source);
+                
+                // Обновляем таблицу источников
+                loadSources();
+                
+                // Закрываем модальное окно
+                sourceModal.style.display = 'none';
+                
+                // Показываем уведомление
+                alert('Источник успешно сохранен!');
+            });
+            
+            document.getElementById('content-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Сохранение контента
+                const contentId = document.getElementById('content-id').value || Date.now().toString();
+                const contentTitle = document.getElementById('content-title').value;
+                const contentText = document.getElementById('content-text').value;
+                const contentSource = document.getElementById('content-source').value;
+                const contentStatus = document.getElementById('content-status').value;
+                const contentCategory = document.getElementById('content-category').value;
+                
+                // Создаем объект контента
+                const content = {
+                    id: contentId,
+                    title: contentTitle,
+                    text: contentText,
+                    source: contentSource,
+                    status: contentStatus,
+                    category: contentCategory,
+                    created: new Date().toLocaleString()
+                };
+                
+                // Сохраняем контент в localStorage
+                saveContent(content);
+                
+                // Обновляем таблицу контента
+                loadContent();
+                
+                // Закрываем модальное окно
+                contentModal.style.display = 'none';
+                
+                // Показываем уведомление
+                alert('Контент успешно сохранен!');
+            });
+            
+            document.getElementById('template-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Сохранение шаблона
+                const templateId = document.getElementById('template-id').value || Date.now().toString();
+                const templateName = document.getElementById('template-name').value;
+                const templateSocial = document.getElementById('template-social').value;
+                const templateTone = document.getElementById('template-tone').value;
+                const templateText = document.getElementById('template-text').value;
+                
+                // Создаем объект шаблона
+                const template = {
+                    id: templateId,
+                    name: templateName,
+                    social: templateSocial,
+                    tone: templateTone,
+                    text: templateText
+                };
+                
+                // Сохраняем шаблон в localStorage
+                saveTemplate(template);
+                
+                // Обновляем таблицу шаблонов
+                loadTemplates();
+                
+                // Закрываем модальное окно
+                templateModal.style.display = 'none';
+                
+                // Показываем уведомление
+                alert('Шаблон успешно сохранен!');
+            });
+            
+            // Функции для работы с данными
+            function saveSource(source) {
+                let sources = JSON.parse(localStorage.getItem('sources') || '[]');
+                const index = sources.findIndex(s => s.id === source.id);
+                
+                if (index !== -1) {
+                    sources[index] = source;
+                } else {
+                    sources.push(source);
+                }
+                
+                localStorage.setItem('sources', JSON.stringify(sources));
+            }
+            
+            function saveContent(content) {
+                let contents = JSON.parse(localStorage.getItem('contents') || '[]');
+                const index = contents.findIndex(c => c.id === content.id);
+                
+                if (index !== -1) {
+                    contents[index] = content;
+                } else {
+                    contents.push(content);
+                }
+                
+                localStorage.setItem('contents', JSON.stringify(contents));
+            }
+            
+            function saveTemplate(template) {
+                let templates = JSON.parse(localStorage.getItem('templates') || '[]');
+                const index = templates.findIndex(t => t.id === template.id);
+                
+                if (index !== -1) {
+                    templates[index] = template;
+                } else {
+                    templates.push(template);
+                }
+                
+                localStorage.setItem('templates', JSON.stringify(templates));
+            }
+            
+            function loadSources() {
+                const sources = JSON.parse(localStorage.getItem('sources') || '[]');
+                const tbody = document.querySelector('#sources-table tbody');
+                tbody.innerHTML = '';
+                
+                sources.forEach(source => {
+                    const row = document.createElement('tr');
+                    
+                    // Форматируем статус
+                    const statusClass = source.status === 'active' ? 'status-active' : 'status-inactive';
+                    const statusText = source.status === 'active' ? 'Активен' : 'Неактивен';
+                    
+                    // Форматируем категорию
+                    let categoryText = '';
+                    switch(source.category) {
+                        case 'technology': categoryText = 'Технологии'; break;
+                        case 'business': categoryText = 'Бизнес'; break;
+                        case 'finance': categoryText = 'Финансы'; break;
+                        case 'crypto': categoryText = 'Криптовалюты'; break;
+                        case 'ai': categoryText = 'Искусственный интеллект'; break;
+                        default: categoryText = source.category;
+                    }
+                    
+                    row.innerHTML = `
+                        <td>${source.id}</td>
+                        <td>${source.name}</td>
+                        <td><a href="${source.url}" target="_blank">${source.url}</a></td>
+                        <td>${categoryText}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn edit-btn" data-id="${source.id}" data-type="source">Изменить</button>
+                            <button class="action-btn delete-btn" data-id="${source.id}" data-type="source">Удалить</button>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Добавляем обработчики для кнопок действий
+                document.querySelectorAll('.edit-btn[data-type="source"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const sourceId = this.getAttribute('data-id');
+                        editSource(sourceId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-btn[data-type="source"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const sourceId = this.getAttribute('data-id');
+                        deleteSource(sourceId);
+                    });
+                });
+            }
+            
+            function loadContent() {
+                const contents = JSON.parse(localStorage.getItem('contents') || '[]');
+                const tbody = document.querySelector('#content-table tbody');
+                tbody.innerHTML = '';
+                
+                // Получаем выбранный фильтр
+                const filter = document.getElementById('content-filter').value;
+                
+                // Фильтруем контент
+                const filteredContents = filter === 'all' ? contents : contents.filter(content => content.status === filter);
+                
+                filteredContents.forEach(content => {
+                    const row = document.createElement('tr');
+                    
+                    // Форматируем статус
+                    let statusClass = '';
+                    let statusText = '';
+                    
+                    switch(content.status) {
+                        case 'pending':
+                            statusClass = 'status-pending';
+                            statusText = 'Ожидает публикации';
+                            break;
+                        case 'published':
+                            statusClass = 'status-active';
+                            statusText = 'Опубликовано';
+                            break;
+                        case 'rejected':
+                            statusClass = 'status-inactive';
+                            statusText = 'Отклонено';
+                            break;
+                        default:
+                            statusClass = '';
+                            statusText = content.status;
+                    }
+                    
+                    row.innerHTML = `
+                        <td>${content.id}</td>
+                        <td>${content.title}</td>
+                        <td>${content.source}</td>
+                        <td>${content.created}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn preview-btn" data-id="${content.id}" data-type="content">Просмотр</button>
+                            <button class="action-btn edit-btn" data-id="${content.id}" data-type="content">Изменить</button>
+                            <button class="action-btn delete-btn" data-id="${content.id}" data-type="content">Удалить</button>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Добавляем обработчики для кнопок действий
+                document.querySelectorAll('.edit-btn[data-type="content"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const contentId = this.getAttribute('data-id');
+                        editContent(contentId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-btn[data-type="content"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const contentId = this.getAttribute('data-id');
+                        deleteContent(contentId);
+                    });
+                });
+                
+                document.querySelectorAll('.preview-btn[data-type="content"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const contentId = this.getAttribute('data-id');
+                        previewContent(contentId);
+                    });
+                });
+            }
+            
+            function loadTemplates() {
+                const templates = JSON.parse(localStorage.getItem('templates') || '[]');
+                const tbody = document.querySelector('#templates-table tbody');
+                tbody.innerHTML = '';
+                
+                templates.forEach(template => {
+                    const row = document.createElement('tr');
+                    
+                    // Форматируем социальную сеть
+                    let socialText = '';
+                    switch(template.social) {
+                        case 'twitter': socialText = 'Twitter'; break;
+                        case 'linkedin': socialText = 'LinkedIn'; break;
+                        case 'youtube': socialText = 'YouTube Blog'; break;
+                        case 'threads': socialText = 'Threads'; break;
+                        default: socialText = template.social;
+                    }
+                    
+                    // Форматируем тон
+                    let toneText = '';
+                    switch(template.tone) {
+                        case 'professional': toneText = 'Профессиональный'; break;
+                        case 'casual': toneText = 'Повседневный'; break;
+                        case 'enthusiastic': toneText = 'Восторженный'; break;
+                        case 'informative': toneText = 'Информативный'; break;
+                        case 'humorous': toneText = 'Юмористический'; break;
+                        default: toneText = template.tone;
+                    }
+                    
+                    row.innerHTML = `
+                        <td>${template.id}</td>
+                        <td>${template.name}</td>
+                        <td>${socialText}</td>
+                        <td>${toneText}</td>
+                        <td class="action-buttons">
+                            <button class="action-btn preview-btn" data-id="${template.id}" data-type="template">Просмотр</button>
+                            <button class="action-btn edit-btn" data-id="${template.id}" data-type="template">Изменить</button>
+                            <button class="action-btn delete-btn" data-id="${template.id}" data-type="template">Удалить</button>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Добавляем обработчики для кнопок действий
+                document.querySelectorAll('.edit-btn[data-type="template"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const templateId = this.getAttribute('data-id');
+                        editTemplate(templateId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-btn[data-type="template"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const templateId = this.getAttribute('data-id');
+                        deleteTemplate(templateId);
+                    });
+                });
+                
+                document.querySelectorAll('.preview-btn[data-type="template"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const templateId = this.getAttribute('data-id');
+                        previewTemplate(templateId);
+                    });
+                });
+            }
+            
+            function editSource(sourceId) {
+                const sources = JSON.parse(localStorage.getItem('sources') || '[]');
+                const source = sources.find(s => s.id === sourceId);
+                
+                if (source) {
+                    document.getElementById('source-modal-title').textContent = 'Редактировать источник';
+                    document.getElementById('source-id').value = source.id;
+                    document.getElementById('source-name').value = source.name;
+                    document.getElementById('source-url').value = source.url;
+                    document.getElementById('source-category').value = source.category;
+                    document.getElementById('source-status').value = source.status;
+                    document.getElementById('source-selector').value = source.selector || '';
+                    document.getElementById('source-notes').value = source.notes || '';
+                    
+                    sourceModal.style.display = 'block';
+                }
+            }
+            
+            function deleteSource(sourceId) {
+                if (confirm('Вы уверены, что хотите удалить этот источник?')) {
+                    let sources = JSON.parse(localStorage.getItem('sources') || '[]');
+                    sources = sources.filter(s => s.id !== sourceId);
+                    localStorage.setItem('sources', JSON.stringify(sources));
+                    
+                    loadSources();
+                    
+                    alert('Источник успешно удален!');
+                }
+            }
+            
+            function editContent(contentId) {
+                const contents = JSON.parse(localStorage.getItem('contents') || '[]');
+                const content = contents.find(c => c.id === contentId);
+                
+                if (content) {
+                    document.getElementById('content-modal-title').textContent = 'Редактировать контент';
+                    document.getElementById('content-id').value = content.id;
+                    document.getElementById('content-title').value = content.title;
+                    document.getElementById('content-text').value = content.text;
+                    document.getElementById('content-source').value = content.source;
+                    document.getElementById('content-status').value = content.status;
+                    document.getElementById('content-category').value = content.category;
+                    
+                    contentModal.style.display = 'block';
+                }
+            }
+            
+            function deleteContent(contentId) {
+                if (confirm('Вы уверены, что хотите удалить этот контент?')) {
+                    let contents = JSON.parse(localStorage.getItem('contents') || '[]');
+                    contents = contents.filter(c => c.id !== contentId);
+                    localStorage.setItem('contents', JSON.stringify(contents));
+                    
+                    loadContent();
+                    
+                    alert('Контент успешно удален!');
+                }
+            }
+            
+            function previewContent(contentId) {
+                const contents = JSON.parse(localStorage.getItem('contents') || '[]');
+                const content = contents.find(c => c.id === contentId);
+                
+                if (content) {
+                    alert(`Заголовок: ${content.title}\n\nТекст: ${content.text}\n\nИсточник: ${content.source}\n\nКатегория: ${content.category}\n\nСоздан: ${content.created}`);
+                }
+            }
+            
+            function editTemplate(templateId) {
+                const templates = JSON.parse(localStorage.getItem('templates') || '[]');
+                const template = templates.find(t => t.id === templateId);
+                
+                if (template) {
+                    document.getElementById('template-modal-title').textContent = 'Редактировать шаблон';
+                    document.getElementById('template-id').value = template.id;
+                    document.getElementById('template-name').value = template.name;
+                    document.getElementById('template-social').value = template.social;
+                    document.getElementById('template-tone').value = template.tone;
+                    document.getElementById('template-text').value = template.text;
+                    
+                    templateModal.style.display = 'block';
+                }
+            }
+            
+            function deleteTemplate(templateId) {
+                if (confirm('Вы уверены, что хотите удалить этот шаблон?')) {
+                    let templates = JSON.parse(localStorage.getItem('templates') || '[]');
+                    templates = templates.filter(t => t.id !== templateId);
+                    localStorage.setItem('templates', JSON.stringify(templates));
+                    
+                    loadTemplates();
+                    
+                    alert('Шаблон успешно удален!');
+                }
+            }
+            
+            function previewTemplate(templateId) {
+                const templates = JSON.parse(localStorage.getItem('templates') || '[]');
+                const template = templates.find(t => t.id === templateId);
+                
+                if (template) {
+                    // Пример данных для предпросмотра
+                    const previewData = {
+                        title: 'Новый прорыв в технологии блокчейн',
+                        content: 'Компания XYZ представила новую технологию, которая значительно повышает скорость транзакций в блокчейне.',
+                        source: 'TechNews',
+                        url: 'https://technews.com/blockchain-breakthrough',
+                        date: new Date().toLocaleDateString(),
+                        hashtags: '#blockchain #technology #innovation'
+                    };
+                    
+                    // Заменяем переменные в шаблоне
+                    let previewText = template.text;
+                    Object.keys(previewData).forEach(key => {
+                        previewText = previewText.replace(new RegExp(`{${key}}`, 'g'), previewData[key]);
+                    });
+                    
+                    alert(`Предпросмотр шаблона "${template.name}":\n\n${previewText}`);
+                }
+            }
+            
+            // Обработчики для кнопок
+            document.getElementById('refresh-sources').addEventListener('click', function() {
+                loadSources();
+                alert('Список источников обновлен!');
+            });
+            
+            document.getElementById('refresh-content').addEventListener('click', function() {
+                loadContent();
+                alert('Список контента обновлен!');
+            });
+            
+            document.getElementById('refresh-templates').addEventListener('click', function() {
+                loadTemplates();
+                alert('Список шаблонов обновлен!');
+            });
+            
+            document.getElementById('start-parsing').addEventListener('click', function() {
+                const parsingLog = document.getElementById('parsing-log');
+                parsingLog.innerHTML += `[${new Date().toLocaleTimeString()}] Запуск парсинга...<br>`;
+                
+                setTimeout(() => {
+                    parsingLog.innerHTML += `[${new Date().toLocaleTimeString()}] Парсинг источников...<br>`;
+                    
+                    setTimeout(() => {
+                        parsingLog.innerHTML += `[${new Date().toLocaleTimeString()}] Найдено 15 новых статей.<br>`;
+                        parsingLog.innerHTML += `[${new Date().toLocaleTimeString()}] Фильтрация по ключевым словам...<br>`;
+                        
+                        setTimeout(() => {
+                            parsingLog.innerHTML += `[${new Date().toLocaleTimeString()}] После фильтрации осталось 8 статей.<br>`;
+                            parsingLog.innerHTML += `[${new Date().toLocaleTimeString()}] Сохранение статей в базу данных...<br>`;
+                            
+                            setTimeout(() => {
+                                parsingLog.innerHTML += `[${new Date().toLocaleTimeString()}] Парсинг успешно завершен!<br>`;
+                                alert('Парсинг успешно завершен! Найдено 8 новых статей.');
+                                
+                                // Добавляем несколько тестовых статей
+                                const contents = JSON.parse(localStorage.getItem('contents') || '[]');
+                                
+                                const newContents = [
+                                    {
+                                        id: Date.now().toString(),
+                                        title: 'Новый прорыв в технологии блокчейн',
+                                        text: 'Компания XYZ представила новую технологию, которая значительно повышает скорость транзакций в блокчейне.',
+                                        source: 'TechNews',
+                                        status: 'pending',
+                                        category: 'technology',
+                                        created: new Date().toLocaleString()
+                                    },
+                                    {
+                                        id: (Date.now() + 1).toString(),
+                                        title: 'Искусственный интеллект в медицине: новые возможности',
+                                        text: 'Исследователи из университета ABC разработали новую систему ИИ, которая помогает диагностировать заболевания на ранних стадиях.',
+                                        source: 'MedicalDaily',
+                                        status: 'pending',
+                                        category: 'ai',
+                                        created: new Date().toLocaleString()
+                                    }
+                                ];
+                                
+                                localStorage.setItem('contents', JSON.stringify([...contents, ...newContents]));
+                                loadContent();
+                            }, 1000);
+                        }, 1000);
+                    }, 1000);
+                }, 1000);
+            });
+            
+            document.getElementById('stop-parsing').addEventListener('click', function() {
+                const parsingLog = document.getElementById('parsing-log');
+                parsingLog.innerHTML += `[${new Date().toLocaleTimeString()}] Остановка парсинга...<br>`;
+                
+                setTimeout(() => {
+                    parsingLog.innerHTML += `[${new Date().toLocaleTimeString()}] Парсинг остановлен.<br>`;
+                    alert('Парсинг остановлен!');
+                }, 500);
+            });
+            
+            document.getElementById('schedule-parsing').addEventListener('click', function() {
+                alert('Настройка расписания парсинга:\n\nПарсинг будет выполняться каждые 30 минут.');
+            });
+            
+            document.getElementById('content-filter').addEventListener('change', function() {
+                loadContent();
+            });
+            
+            document.getElementById('preview-template').addEventListener('click', function() {
+                const templateText = document.getElementById('template-text').value;
+                
+                // Пример данных для предпросмотра
+                const previewData = {
+                    title: 'Новый прорыв в технологии блокчейн',
+                    content: 'Компания XYZ представила новую технологию, которая значительно повышает скорость транзакций в блокчейне.',
+                    source: 'TechNews',
+                    url: 'https://technews.com/blockchain-breakthrough',
+                    date: new Date().toLocaleDateString(),
+                    hashtags: '#blockchain #technology #innovation'
+                };
+                
+                // Заменяем переменные в шаблоне
+                let previewText = templateText;
+                Object.keys(previewData).forEach(key => {
+                    previewText = previewText.replace(new RegExp(`{${key}}`, 'g'), previewData[key]);
+                });
+                
+                document.getElementById('template-preview').textContent = previewText;
+            });
+            
+            // Загружаем данные при загрузке страницы
+            loadSources();
+            loadContent();
+            loadTemplates();
+            
+            // Заполняем выпадающий список источников
+            const sources = JSON.parse(localStorage.getItem('sources') || '[]');
+            const sourceSelect = document.getElementById('content-source');
+            
+            // Очищаем список, оставляя только опцию "Ручной ввод"
+            while (sourceSelect.options.length > 1) {
+                sourceSelect.remove(1);
+            }
+            
+            // Добавляем источники
+            sources.forEach(source => {
+                const option = document.createElement('option');
+                option.value = source.name;
+                option.textContent = source.name;
+                sourceSelect.appendChild(option);
+            });
+        });
+    </script>
+</body>
+</html>

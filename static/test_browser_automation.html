@@ -1,0 +1,567 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Тест автоматизации с антидетект браузерами</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], 
+        input[type="password"], 
+        input[type="number"],
+        input[type="url"],
+        select, 
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        textarea {
+            height: 150px;
+            resize: vertical;
+        }
+        .log-container {
+            background-color: #f8f9fa;
+            border: 1px solid #eee;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 4px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin-bottom: 5px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        .nav {
+            display: flex;
+            background-color: #2c3e50;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .nav-item {
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: #3498db;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-right: 5px;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab.active {
+            border: 1px solid #ddd;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            background-color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Система автоматизации с антидетект браузерами</h1>
+        
+        <div class="nav">
+            <a href="index.html" class="nav-item">Главная</a>
+            <a href="settings.html" class="nav-item">Настройки</a>
+            <a href="profiles.html" class="nav-item">Профили</a>
+            <a href="test_browser_automation.html" class="nav-item active">Тестирование</a>
+        </div>
+        
+        <div class="card">
+            <h2>Тест автоматизации постинга</h2>
+            
+            <div class="alert alert-info">
+                Здесь вы можете протестировать автоматизацию постинга через выбранный профиль антидетект браузера.
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="twitter">Twitter</div>
+                <div class="tab" data-tab="linkedin">LinkedIn</div>
+                <div class="tab" data-tab="facebook">Facebook</div>
+                <div class="tab" data-tab="instagram">Instagram</div>
+            </div>
+            
+            <div class="tab-content active" id="twitter-content">
+                <form id="twitter-form">
+                    <div class="form-group">
+                        <label for="twitter-profile">Выберите профиль:</label>
+                        <select id="twitter-profile" name="twitter-profile" required>
+                            <option value="">-- Выберите профиль --</option>
+                            <!-- Профили будут добавлены через JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="twitter-content">Текст твита:</label>
+                        <textarea id="twitter-content" name="twitter-content" required placeholder="Введите текст для публикации..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="twitter-image">Изображение (URL):</label>
+                        <input type="url" id="twitter-image" name="twitter-image" placeholder="https://example.com/image.jpg">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="twitter-schedule">Запланировать публикацию:</label>
+                        <input type="datetime-local" id="twitter-schedule" name="twitter-schedule">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Опубликовать</button>
+                    <button type="button" class="btn" id="twitter-preview">Предпросмотр</button>
+                </form>
+            </div>
+            
+            <div class="tab-content" id="linkedin-content">
+                <form id="linkedin-form">
+                    <div class="form-group">
+                        <label for="linkedin-profile">Выберите профиль:</label>
+                        <select id="linkedin-profile" name="linkedin-profile" required>
+                            <option value="">-- Выберите профиль --</option>
+                            <!-- Профили будут добавлены через JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="linkedin-content">Текст публикации:</label>
+                        <textarea id="linkedin-content" name="linkedin-content" required placeholder="Введите текст для публикации..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="linkedin-image">Изображение (URL):</label>
+                        <input type="url" id="linkedin-image" name="linkedin-image" placeholder="https://example.com/image.jpg">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="linkedin-schedule">Запланировать публикацию:</label>
+                        <input type="datetime-local" id="linkedin-schedule" name="linkedin-schedule">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Опубликовать</button>
+                    <button type="button" class="btn" id="linkedin-preview">Предпросмотр</button>
+                </form>
+            </div>
+            
+            <div class="tab-content" id="facebook-content">
+                <form id="facebook-form">
+                    <div class="form-group">
+                        <label for="facebook-profile">Выберите профиль:</label>
+                        <select id="facebook-profile" name="facebook-profile" required>
+                            <option value="">-- Выберите профиль --</option>
+                            <!-- Профили будут добавлены через JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="facebook-content">Текст публикации:</label>
+                        <textarea id="facebook-content" name="facebook-content" required placeholder="Введите текст для публикации..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="facebook-image">Изображение (URL):</label>
+                        <input type="url" id="facebook-image" name="facebook-image" placeholder="https://example.com/image.jpg">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="facebook-schedule">Запланировать публикацию:</label>
+                        <input type="datetime-local" id="facebook-schedule" name="facebook-schedule">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Опубликовать</button>
+                    <button type="button" class="btn" id="facebook-preview">Предпросмотр</button>
+                </form>
+            </div>
+            
+            <div class="tab-content" id="instagram-content">
+                <form id="instagram-form">
+                    <div class="form-group">
+                        <label for="instagram-profile">Выберите профиль:</label>
+                        <select id="instagram-profile" name="instagram-profile" required>
+                            <option value="">-- Выберите профиль --</option>
+                            <!-- Профили будут добавлены через JavaScript -->
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="instagram-content">Текст публикации:</label>
+                        <textarea id="instagram-content" name="instagram-content" required placeholder="Введите текст для публикации..."></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="instagram-image">Изображение (URL):</label>
+                        <input type="url" id="instagram-image" name="instagram-image" placeholder="https://example.com/image.jpg" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="instagram-schedule">Запланировать публикацию:</label>
+                        <input type="datetime-local" id="instagram-schedule" name="instagram-schedule">
+                    </div>
+                    
+                    <button type="submit" class="btn btn-success">Опубликовать</button>
+                    <button type="button" class="btn" id="instagram-preview">Предпросмотр</button>
+                </form>
+            </div>
+        </div>
+        
+        <div class="card">
+            <h2>Журнал активности</h2>
+            <div class="log-container" id="activity-log">
+                <div class="log-entry">Система готова к тестированию автоматизации постинга</div>
+                <div class="log-entry">Выберите профиль и заполните форму для публикации</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Функционал для работы с вкладками
+            const tabs = document.querySelectorAll('.tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Удаляем активный класс со всех вкладок
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Скрываем все содержимое вкладок
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Добавляем активный класс к выбранной вкладке
+                    this.classList.add('active');
+                    
+                    // Показываем содержимое выбранной вкладки
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId + '-content').classList.add('active');
+                });
+            });
+            
+            // Функция для загрузки профилей
+            function loadProfiles() {
+                // Получаем профили из localStorage
+                const profiles = JSON.parse(localStorage.getItem('profiles') || '[]');
+                
+                // Если профилей нет, добавляем демо-данные
+                if (profiles.length === 0) {
+                    const demoProfiles = [
+                        {
+                            id: '1',
+                            name: 'Twitter Profile 1',
+                            type: 'adspower',
+                            browserId: 'ads_123456',
+                            status: 'active',
+                            social: 'twitter',
+                            notes: 'Основной профиль для Twitter',
+                            lastUsed: '2025-03-27 15:30:22'
+                        },
+                        {
+                            id: '2',
+                            name: 'LinkedIn Profile',
+                            type: 'adspower',
+                            browserId: 'ads_789012',
+                            status: 'active',
+                            social: 'linkedin',
+                            notes: 'Профиль для деловых контактов',
+                            lastUsed: '2025-03-26 10:15:45'
+                        },
+                        {
+                            id: '3',
+                            name: 'Twitter Dolphin',
+                            type: 'dolphin',
+                            browserId: 'dol_345678',
+                            status: 'active',
+                            social: 'twitter',
+                            notes: 'Тестовый профиль в Dolphin',
+                            lastUsed: '2025-03-25 18:42:10'
+                        },
+                        {
+                            id: '4',
+                            name: 'Facebook Profile',
+                            type: 'adspower',
+                            browserId: 'ads_901234',
+                            status: 'active',
+                            social: 'facebook',
+                            notes: 'Профиль для Facebook',
+                            lastUsed: '2025-03-24 12:20:15'
+                        },
+                        {
+                            id: '5',
+                            name: 'Instagram Profile',
+                            type: 'dolphin',
+                            browserId: 'dol_567890',
+                            status: 'active',
+                            social: 'instagram',
+                            notes: 'Профиль для Instagram',
+                            lastUsed: '2025-03-23 09:45:30'
+                        }
+                    ];
+                    
+                    // Сохраняем демо-профили
+                    localStorage.setItem('profiles', JSON.stringify(demoProfiles));
+                    
+                    // Используем демо-профили
+                    profiles.push(...demoProfiles);
+                }
+                
+                // Очищаем выпадающие списки
+                document.getElementById('twitter-profile').innerHTML = '<option value="">-- Выберите профиль --</option>';
+                document.getElementById('linkedin-profile').innerHTML = '<option value="">-- Выберите профиль --</option>';
+                document.getElementById('facebook-profile').innerHTML = '<option value="">-- Выберите профиль --</option>';
+                document.getElementById('instagram-profile').innerHTML = '<option value="">-- Выберите профиль --</option>';
+                
+                // Заполняем выпадающие списки профилями
+                profiles.forEach(profile => {
+                    if (profile.status === 'active') {
+                        const option = document.createElement('option');
+                        option.value = profile.id;
+                        option.textContent = `${profile.name} (${profile.type})`;
+                        
+                        // Добавляем профиль в соответствующий выпадающий список
+                        if (profile.social === 'twitter') {
+                            document.getElementById('twitter-profile').appendChild(option.cloneNode(true));
+                        } else if (profile.social === 'linkedin') {
+                            document.getElementById('linkedin-profile').appendChild(option.cloneNode(true));
+                        } else if (profile.social === 'facebook') {
+                            document.getElementById('facebook-profile').appendChild(option.cloneNode(true));
+                        } else if (profile.social === 'instagram') {
+                            document.getElementById('instagram-profile').appendChild(option.cloneNode(true));
+                        }
+                    }
+                });
+            }
+            
+            // Функция для добавления записи в журнал активности
+            function addLogEntry(message) {
+                const logContainer = document.getElementById('activity-log');
+                const logEntry = document.createElement('div');
+                logEntry.className = 'log-entry';
+                
+                // Добавляем временную метку
+                const now = new Date();
+                const timestamp = now.toLocaleTimeString();
+                
+                logEntry.textContent = `[${timestamp}] ${message}`;
+                
+                // Добавляем запись в начало журнала
+                logContainer.insertBefore(logEntry, logContainer.firstChild);
+            }
+            
+            // Обработчики отправки форм
+            const forms = document.querySelectorAll('form');
+            forms.forEach(form => {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Получаем данные формы
+                    const formData = new FormData(this);
+                    const formObject = {};
+                    formData.forEach((value, key) => {
+                        formObject[key] = value;
+                    });
+                    
+                    // Определяем тип социальной сети
+                    let socialType = '';
+                    if (this.id === 'twitter-form') socialType = 'Twitter';
+                    else if (this.id === 'linkedin-form') socialType = 'LinkedIn';
+                    else if (this.id === 'facebook-form') socialType = 'Facebook';
+                    else if (this.id === 'instagram-form') socialType = 'Instagram';
+                    
+                    // Получаем профиль
+                    const profileId = formObject[`${socialType.toLowerCase()}-profile`];
+                    const profiles = JSON.parse(localStorage.getItem('profiles') || '[]');
+                    const profile = profiles.find(p => p.id === profileId);
+                    
+                    if (profile) {
+                        // Добавляем запись в журнал
+                        addLogEntry(`Начало публикации в ${socialType} через профиль ${profile.name}`);
+                        
+                        // Имитируем процесс публикации
+                        setTimeout(() => {
+                            addLogEntry(`Запуск браузера ${profile.type === 'adspower' ? 'AdsPower' : 'Dolphin Anty'}`);
+                        }, 500);
+                        
+                        setTimeout(() => {
+                            addLogEntry(`Открытие профиля ${profile.browserId}`);
+                        }, 1000);
+                        
+                        setTimeout(() => {
+                            addLogEntry(`Переход на сайт ${socialType}`);
+                        }, 1500);
+                        
+                        setTimeout(() => {
+                            addLogEntry(`Заполнение формы публикации`);
+                        }, 2000);
+                        
+                        setTimeout(() => {
+                            addLogEntry(`Публикация контента в ${socialType}`);
+                        }, 2500);
+                        
+                        setTimeout(() => {
+                            addLogEntry(`Публикация успешно завершена!`);
+                            
+                            // Обновляем время последнего использования профиля
+                            profile.lastUsed = new Date().toLocaleString();
+                            
+                            // Сохраняем обновленный профиль
+                            const updatedProfiles = profiles.map(p => p.id === profile.id ? profile : p);
+                            localStorage.setItem('profiles', JSON.stringify(updatedProfiles));
+                            
+                            // Очищаем форму
+                            this.reset();
+                            
+                            // Показываем уведомление
+                            alert(`Публикация в ${socialType} успешно выполнена!`);
+                        }, 3000);
+                    } else {
+                        addLogEntry(`Ошибка: профиль не найден`);
+                        alert('Ошибка: выбранный профиль не найден');
+                    }
+                });
+            });
+            
+            // Обработчики кнопок предпросмотра
+            document.getElementById('twitter-preview').addEventListener('click', function() {
+                const content = document.getElementById('twitter-content').value;
+                if (content) {
+                    addLogEntry(`Предпросмотр твита: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"`);
+                    alert(`Предпросмотр твита:\n\n${content}`);
+                } else {
+                    alert('Введите текст твита для предпросмотра');
+                }
+            });
+            
+            document.getElementById('linkedin-preview').addEventListener('click', function() {
+                const content = document.getElementById('linkedin-content').value;
+                if (content) {
+                    addLogEntry(`Предпросмотр публикации LinkedIn: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"`);
+                    alert(`Предпросмотр публикации LinkedIn:\n\n${content}`);
+                } else {
+                    alert('Введите текст публикации для предпросмотра');
+                }
+            });
+            
+            document.getElementById('facebook-preview').addEventListener('click', function() {
+                const content = document.getElementById('facebook-content').value;
+                if (content) {
+                    addLogEntry(`Предпросмотр публикации Facebook: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"`);
+                    alert(`Предпросмотр публикации Facebook:\n\n${content}`);
+                } else {
+                    alert('Введите текст публикации для предпросмотра');
+                }
+            });
+            
+            document.getElementById('instagram-preview').addEventListener('click', function() {
+                const content = document.getElementById('instagram-content').value;
+                if (content) {
+                    addLogEntry(`Предпросмотр публикации Instagram: "${content.substring(0, 50)}${content.length > 50 ? '...' : ''}"`);
+                    alert(`Предпросмотр публикации Instagram:\n\n${content}`);
+                } else {
+                    alert('Введите текст публикации для предпросмотра');
+                }
+            });
+            
+            // Загружаем профили при загрузке страницы
+            loadProfiles();
+            
+            // Добавляем запись в журнал о загрузке страницы
+            addLogEntry('Страница тестирования загружена');
+        });
+    </script>
+</body>
+</html>

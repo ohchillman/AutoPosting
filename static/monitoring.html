@@ -1,0 +1,963 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мониторинг - Система автоматизации постинга</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], 
+        input[type="password"], 
+        input[type="number"],
+        input[type="url"],
+        select, 
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-right: 5px;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab.active {
+            border: 1px solid #ddd;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            background-color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .nav {
+            display: flex;
+            background-color: #2c3e50;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .nav-item {
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .status-active {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-inactive {
+            color: #7f8c8d;
+        }
+        .status-pending {
+            color: #f39c12;
+        }
+        .status-error {
+            color: #e74c3c;
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+        .dashboard-item {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        .dashboard-item h3 {
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+        .stat-number {
+            font-size: 36px;
+            font-weight: bold;
+            color: #3498db;
+            margin: 10px 0;
+        }
+        .stat-label {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .progress-container {
+            width: 100%;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .progress-bar {
+            height: 20px;
+            border-radius: 4px;
+            text-align: center;
+            line-height: 20px;
+            color: white;
+        }
+        .progress-twitter {
+            background-color: #1da1f2;
+        }
+        .progress-linkedin {
+            background-color: #0077b5;
+        }
+        .progress-youtube {
+            background-color: #ff0000;
+        }
+        .progress-threads {
+            background-color: #000000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Система автоматизации постинга с антидетект браузерами</h1>
+        
+        <div class="nav">
+            <a href="index.html" class="nav-item">Главная</a>
+            <a href="settings.html" class="nav-item">Настройки</a>
+            <a href="profiles.html" class="nav-item">Профили</a>
+            <a href="content.html" class="nav-item">Контент</a>
+            <a href="posting.html" class="nav-item">Постинг</a>
+            <a href="monitoring.html" class="nav-item active">Мониторинг</a>
+        </div>
+        
+        <div class="card">
+            <h2>Мониторинг системы</h2>
+            
+            <div class="alert alert-info">
+                В этом разделе вы можете отслеживать статистику и производительность системы автоматизации постинга.
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="dashboard">Дашборд</div>
+                <div class="tab" data-tab="accounts">Аккаунты</div>
+                <div class="tab" data-tab="posts">Публикации</div>
+                <div class="tab" data-tab="errors">Ошибки</div>
+            </div>
+            
+            <!-- Дашборд -->
+            <div class="tab-content active" id="dashboard-content">
+                <div class="dashboard-grid">
+                    <div class="dashboard-item">
+                        <h3>Общая статистика</h3>
+                        <div class="stat-number" id="total-posts">0</div>
+                        <div class="stat-label">Всего публикаций</div>
+                        <div class="stat-number" id="active-accounts">0</div>
+                        <div class="stat-label">Активных аккаунтов</div>
+                        <div class="stat-number" id="success-rate">0%</div>
+                        <div class="stat-label">Успешных публикаций</div>
+                    </div>
+                    
+                    <div class="dashboard-item">
+                        <h3>Распределение по соц. сетям</h3>
+                        <div>
+                            <div class="stat-label">Twitter</div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-twitter" id="twitter-progress" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="stat-label">LinkedIn</div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-linkedin" id="linkedin-progress" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="stat-label">YouTube Blog</div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-youtube" id="youtube-progress" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="stat-label">Threads</div>
+                            <div class="progress-container">
+                                <div class="progress-bar progress-threads" id="threads-progress" style="width: 0%">0%</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-grid">
+                    <div class="dashboard-item">
+                        <h3>Активность за последние 7 дней</h3>
+                        <div class="chart-container">
+                            <canvas id="activity-chart"></canvas>
+                        </div>
+                    </div>
+                    
+                    <div class="dashboard-item">
+                        <h3>Статус системы</h3>
+                        <table>
+                            <tr>
+                                <td>Парсинг новостей</td>
+                                <td><span class="status-active">Активен</span></td>
+                            </tr>
+                            <tr>
+                                <td>Рерайт контента</td>
+                                <td><span class="status-active">Активен</span></td>
+                            </tr>
+                            <tr>
+                                <td>Планировщик постинга</td>
+                                <td><span class="status-active">Активен</span></td>
+                            </tr>
+                            <tr>
+                                <td>Автоматизация браузеров</td>
+                                <td><span class="status-active">Активна</span></td>
+                            </tr>
+                            <tr>
+                                <td>Мониторинг аккаунтов</td>
+                                <td><span class="status-active">Активен</span></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Аккаунты -->
+            <div class="tab-content" id="accounts-content">
+                <div class="form-group">
+                    <button id="refresh-account-stats" class="btn">Обновить статистику</button>
+                </div>
+                
+                <table id="accounts-stats-table">
+                    <thead>
+                        <tr>
+                            <th>Аккаунт</th>
+                            <th>Соц. сеть</th>
+                            <th>Публикаций</th>
+                            <th>Успешных</th>
+                            <th>Ошибок</th>
+                            <th>Последняя активность</th>
+                            <th>Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Данные будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Публикации -->
+            <div class="tab-content" id="posts-content">
+                <div class="form-group">
+                    <button id="refresh-posts-stats" class="btn">Обновить статистику</button>
+                    <select id="posts-filter">
+                        <option value="all">Все соц. сети</option>
+                        <option value="twitter">Twitter</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="youtube">YouTube Blog</option>
+                        <option value="threads">Threads</option>
+                    </select>
+                </div>
+                
+                <table id="posts-stats-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Контент</th>
+                            <th>Аккаунт</th>
+                            <th>Соц. сеть</th>
+                            <th>Дата публикации</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Данные будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Ошибки -->
+            <div class="tab-content" id="errors-content">
+                <div class="form-group">
+                    <button id="refresh-errors" class="btn">Обновить список</button>
+                    <button id="clear-errors" class="btn btn-danger">Очистить ошибки</button>
+                </div>
+                
+                <table id="errors-table">
+                    <thead>
+                        <tr>
+                            <th>Дата/время</th>
+                            <th>Тип</th>
+                            <th>Аккаунт</th>
+                            <th>Соц. сеть</th>
+                            <th>Сообщение</th>
+                            <th>Статус</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Данные будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Функционал для работы с вкладками
+            const tabs = document.querySelectorAll('.tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Удаляем активный класс со всех вкладок
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Скрываем все содержимое вкладок
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Добавляем активный класс к выбранной вкладке
+                    this.classList.add('active');
+                    
+                    // Показываем содержимое выбранной вкладки
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId + '-content').classList.add('active');
+                    
+                    // Если выбрана вкладка с графиком, обновляем его
+                    if (tabId === 'dashboard') {
+                        updateActivityChart();
+                    }
+                });
+            });
+            
+            // Инициализация графика активности
+            let activityChart;
+            
+            function initActivityChart() {
+                const ctx = document.getElementById('activity-chart').getContext('2d');
+                
+                // Получаем даты последних 7 дней
+                const dates = [];
+                for (let i = 6; i >= 0; i--) {
+                    const date = new Date();
+                    date.setDate(date.getDate() - i);
+                    dates.push(date.toLocaleDateString());
+                }
+                
+                // Генерируем случайные данные для демонстрации
+                const twitterData = Array.from({length: 7}, () => Math.floor(Math.random() * 10));
+                const linkedinData = Array.from({length: 7}, () => Math.floor(Math.random() * 10));
+                const youtubeData = Array.from({length: 7}, () => Math.floor(Math.random() * 5));
+                const threadsData = Array.from({length: 7}, () => Math.floor(Math.random() * 8));
+                
+                activityChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: dates,
+                        datasets: [
+                            {
+                                label: 'Twitter',
+                                data: twitterData,
+                                borderColor: '#1da1f2',
+                                backgroundColor: 'rgba(29, 161, 242, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            },
+                            {
+                                label: 'LinkedIn',
+                                data: linkedinData,
+                                borderColor: '#0077b5',
+                                backgroundColor: 'rgba(0, 119, 181, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            },
+                            {
+                                label: 'YouTube Blog',
+                                data: youtubeData,
+                                borderColor: '#ff0000',
+                                backgroundColor: 'rgba(255, 0, 0, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            },
+                            {
+                                label: 'Threads',
+                                data: threadsData,
+                                borderColor: '#000000',
+                                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                                tension: 0.4,
+                                fill: true
+                            }
+                        ]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: false
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Количество публикаций'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Дата'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            function updateActivityChart() {
+                if (!activityChart) {
+                    initActivityChart();
+                    return;
+                }
+                
+                // Обновляем данные графика случайными значениями для демонстрации
+                activityChart.data.datasets.forEach(dataset => {
+                    dataset.data = Array.from({length: 7}, () => Math.floor(Math.random() * 10));
+                });
+                
+                activityChart.update();
+            }
+            
+            // Обновление статистики на дашборде
+            function updateDashboardStats() {
+                // Получаем данные из localStorage
+                const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+                const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+                
+                // Общая статистика
+                document.getElementById('total-posts').textContent = posts.length;
+                
+                const activeAccounts = accounts.filter(account => account.status === 'active');
+                document.getElementById('active-accounts').textContent = activeAccounts.length;
+                
+                const successfulPosts = posts.filter(post => post.status === 'success');
+                const successRate = posts.length > 0 ? Math.round((successfulPosts.length / posts.length) * 100) : 0;
+                document.getElementById('success-rate').textContent = successRate + '%';
+                
+                // Распределение по соц. сетям
+                const twitterPosts = posts.filter(post => post.social === 'twitter');
+                const linkedinPosts = posts.filter(post => post.social === 'linkedin');
+                const youtubePosts = posts.filter(post => post.social === 'youtube');
+                const threadsPosts = posts.filter(post => post.social === 'threads');
+                
+                const twitterPercent = posts.length > 0 ? Math.round((twitterPosts.length / posts.length) * 100) : 0;
+                const linkedinPercent = posts.length > 0 ? Math.round((linkedinPosts.length / posts.length) * 100) : 0;
+                const youtubePercent = posts.length > 0 ? Math.round((youtubePosts.length / posts.length) * 100) : 0;
+                const threadsPercent = posts.length > 0 ? Math.round((threadsPosts.length / posts.length) * 100) : 0;
+                
+                document.getElementById('twitter-progress').style.width = twitterPercent + '%';
+                document.getElementById('twitter-progress').textContent = twitterPercent + '%';
+                
+                document.getElementById('linkedin-progress').style.width = linkedinPercent + '%';
+                document.getElementById('linkedin-progress').textContent = linkedinPercent + '%';
+                
+                document.getElementById('youtube-progress').style.width = youtubePercent + '%';
+                document.getElementById('youtube-progress').textContent = youtubePercent + '%';
+                
+                document.getElementById('threads-progress').style.width = threadsPercent + '%';
+                document.getElementById('threads-progress').textContent = threadsPercent + '%';
+            }
+            
+            // Загрузка статистики аккаунтов
+            function loadAccountStats() {
+                const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+                const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+                const tbody = document.querySelector('#accounts-stats-table tbody');
+                
+                tbody.innerHTML = '';
+                
+                accounts.forEach(account => {
+                    const row = document.createElement('tr');
+                    
+                    // Получаем статистику для аккаунта
+                    const accountPosts = posts.filter(post => post.account === account.id);
+                    const successfulPosts = accountPosts.filter(post => post.status === 'success');
+                    const errorPosts = accountPosts.filter(post => post.status === 'error');
+                    
+                    // Получаем последнюю активность
+                    let lastActivity = '-';
+                    if (accountPosts.length > 0) {
+                        // Сортируем по дате (новые сверху)
+                        accountPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                        lastActivity = accountPosts[0].date;
+                    }
+                    
+                    // Форматируем социальную сеть
+                    let socialText = '';
+                    switch(account.social) {
+                        case 'twitter': socialText = 'Twitter'; break;
+                        case 'linkedin': socialText = 'LinkedIn'; break;
+                        case 'youtube': socialText = 'YouTube Blog'; break;
+                        case 'threads': socialText = 'Threads'; break;
+                        default: socialText = account.social;
+                    }
+                    
+                    // Форматируем статус
+                    const statusClass = account.status === 'active' ? 'status-active' : 'status-inactive';
+                    const statusText = account.status === 'active' ? 'Активен' : 'Неактивен';
+                    
+                    row.innerHTML = `
+                        <td>${account.name}</td>
+                        <td>${socialText}</td>
+                        <td>${accountPosts.length}</td>
+                        <td>${successfulPosts.length}</td>
+                        <td>${errorPosts.length}</td>
+                        <td>${lastActivity}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Если нет аккаунтов, показываем сообщение
+                if (accounts.length === 0) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="7" style="text-align: center;">Нет данных</td>';
+                    tbody.appendChild(row);
+                }
+            }
+            
+            // Загрузка статистики публикаций
+            function loadPostsStats() {
+                const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+                const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+                const contents = JSON.parse(localStorage.getItem('contents') || '[]');
+                const tbody = document.querySelector('#posts-stats-table tbody');
+                
+                tbody.innerHTML = '';
+                
+                // Получаем выбранный фильтр
+                const filter = document.getElementById('posts-filter').value;
+                
+                // Фильтруем публикации
+                const filteredPosts = filter === 'all' ? posts : posts.filter(post => post.social === filter);
+                
+                // Сортируем по дате (новые сверху)
+                filteredPosts.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                filteredPosts.forEach(post => {
+                    const row = document.createElement('tr');
+                    
+                    // Получаем название аккаунта
+                    const account = accounts.find(a => a.id === post.account);
+                    const accountName = account ? account.name : post.account;
+                    
+                    // Получаем название контента
+                    const content = contents.find(c => c.id === post.content);
+                    const contentName = content ? content.title : post.content;
+                    
+                    // Форматируем социальную сеть
+                    let socialText = '';
+                    switch(post.social) {
+                        case 'twitter': socialText = 'Twitter'; break;
+                        case 'linkedin': socialText = 'LinkedIn'; break;
+                        case 'youtube': socialText = 'YouTube Blog'; break;
+                        case 'threads': socialText = 'Threads'; break;
+                        default: socialText = post.social;
+                    }
+                    
+                    // Форматируем статус
+                    let statusClass = '';
+                    let statusText = '';
+                    
+                    switch(post.status) {
+                        case 'success':
+                            statusClass = 'status-active';
+                            statusText = 'Успешно';
+                            break;
+                        case 'error':
+                            statusClass = 'status-error';
+                            statusText = 'Ошибка';
+                            break;
+                        case 'pending':
+                            statusClass = 'status-pending';
+                            statusText = 'В процессе';
+                            break;
+                        default:
+                            statusClass = '';
+                            statusText = post.status;
+                    }
+                    
+                    row.innerHTML = `
+                        <td>${post.id}</td>
+                        <td>${contentName}</td>
+                        <td>${accountName}</td>
+                        <td>${socialText}</td>
+                        <td>${post.date}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                        <td>
+                            <button class="btn" onclick="viewPost('${post.id}')">Просмотр</button>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Если нет публикаций, показываем сообщение
+                if (filteredPosts.length === 0) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="7" style="text-align: center;">Нет данных</td>';
+                    tbody.appendChild(row);
+                }
+            }
+            
+            // Загрузка ошибок
+            function loadErrors() {
+                const errors = JSON.parse(localStorage.getItem('errors') || '[]');
+                const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+                const tbody = document.querySelector('#errors-table tbody');
+                
+                tbody.innerHTML = '';
+                
+                // Сортируем по дате (новые сверху)
+                errors.sort((a, b) => new Date(b.date) - new Date(a.date));
+                
+                errors.forEach(error => {
+                    const row = document.createElement('tr');
+                    
+                    // Получаем название аккаунта
+                    const account = accounts.find(a => a.id === error.account);
+                    const accountName = account ? account.name : error.account;
+                    
+                    // Форматируем социальную сеть
+                    let socialText = '';
+                    switch(error.social) {
+                        case 'twitter': socialText = 'Twitter'; break;
+                        case 'linkedin': socialText = 'LinkedIn'; break;
+                        case 'youtube': socialText = 'YouTube Blog'; break;
+                        case 'threads': socialText = 'Threads'; break;
+                        default: socialText = error.social;
+                    }
+                    
+                    // Форматируем статус
+                    let statusClass = '';
+                    let statusText = '';
+                    
+                    switch(error.status) {
+                        case 'resolved':
+                            statusClass = 'status-active';
+                            statusText = 'Решено';
+                            break;
+                        case 'pending':
+                            statusClass = 'status-pending';
+                            statusText = 'В обработке';
+                            break;
+                        case 'critical':
+                            statusClass = 'status-error';
+                            statusText = 'Критическая';
+                            break;
+                        default:
+                            statusClass = 'status-error';
+                            statusText = 'Ошибка';
+                    }
+                    
+                    row.innerHTML = `
+                        <td>${error.date}</td>
+                        <td>${error.type}</td>
+                        <td>${accountName}</td>
+                        <td>${socialText}</td>
+                        <td>${error.message}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Если нет ошибок, показываем сообщение
+                if (errors.length === 0) {
+                    const row = document.createElement('tr');
+                    row.innerHTML = '<td colspan="6" style="text-align: center;">Нет ошибок</td>';
+                    tbody.appendChild(row);
+                }
+            }
+            
+            // Функция для просмотра публикации
+            window.viewPost = function(postId) {
+                const posts = JSON.parse(localStorage.getItem('posts') || '[]');
+                const post = posts.find(p => p.id === postId);
+                
+                if (post) {
+                    // Получаем название аккаунта
+                    const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+                    const account = accounts.find(a => a.id === post.account);
+                    const accountName = account ? account.name : post.account;
+                    
+                    // Получаем название контента
+                    const contents = JSON.parse(localStorage.getItem('contents') || '[]');
+                    const content = contents.find(c => c.id === post.content);
+                    const contentName = content ? content.title : post.content;
+                    
+                    // Форматируем социальную сеть
+                    let socialText = '';
+                    switch(post.social) {
+                        case 'twitter': socialText = 'Twitter'; break;
+                        case 'linkedin': socialText = 'LinkedIn'; break;
+                        case 'youtube': socialText = 'YouTube Blog'; break;
+                        case 'threads': socialText = 'Threads'; break;
+                        default: socialText = post.social;
+                    }
+                    
+                    // Форматируем статус
+                    let statusText = '';
+                    switch(post.status) {
+                        case 'success': statusText = 'Успешно'; break;
+                        case 'error': statusText = 'Ошибка'; break;
+                        case 'pending': statusText = 'В процессе'; break;
+                        default: statusText = post.status;
+                    }
+                    
+                    alert(`Публикация #${post.id}\n\nКонтент: ${contentName}\n\nАккаунт: ${accountName}\n\nСоциальная сеть: ${socialText}\n\nДата публикации: ${post.date}\n\nСтатус: ${statusText}\n\nТекст публикации: ${post.text || 'Нет данных'}`);
+                }
+            };
+            
+            // Обработчики для кнопок
+            document.getElementById('refresh-account-stats').addEventListener('click', function() {
+                loadAccountStats();
+                alert('Статистика аккаунтов обновлена!');
+            });
+            
+            document.getElementById('refresh-posts-stats').addEventListener('click', function() {
+                loadPostsStats();
+                alert('Статистика публикаций обновлена!');
+            });
+            
+            document.getElementById('refresh-errors').addEventListener('click', function() {
+                loadErrors();
+                alert('Список ошибок обновлен!');
+            });
+            
+            document.getElementById('clear-errors').addEventListener('click', function() {
+                if (confirm('Вы уверены, что хотите очистить все ошибки?')) {
+                    localStorage.setItem('errors', '[]');
+                    loadErrors();
+                    alert('Ошибки очищены!');
+                }
+            });
+            
+            document.getElementById('posts-filter').addEventListener('change', function() {
+                loadPostsStats();
+            });
+            
+            // Инициализация данных, если их нет
+            if (!localStorage.getItem('posts')) {
+                // Создаем тестовые данные для публикаций
+                const posts = [];
+                
+                // Получаем аккаунты
+                const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+                
+                // Если есть аккаунты, создаем для них публикации
+                if (accounts.length > 0) {
+                    // Получаем контент
+                    const contents = JSON.parse(localStorage.getItem('contents') || '[]');
+                    
+                    // Если есть контент, используем его
+                    if (contents.length > 0) {
+                        // Создаем публикации за последние 7 дней
+                        for (let i = 0; i < 7; i++) {
+                            const date = new Date();
+                            date.setDate(date.getDate() - i);
+                            
+                            // Для каждого аккаунта создаем 1-3 публикации в день
+                            accounts.forEach(account => {
+                                const postsCount = Math.floor(Math.random() * 3) + 1;
+                                
+                                for (let j = 0; j < postsCount; j++) {
+                                    // Выбираем случайный контент
+                                    const contentIndex = Math.floor(Math.random() * contents.length);
+                                    const content = contents[contentIndex];
+                                    
+                                    // Создаем публикацию
+                                    const post = {
+                                        id: Date.now() + j + i,
+                                        account: account.id,
+                                        social: account.social,
+                                        content: content ? content.id : '',
+                                        date: date.toLocaleDateString(),
+                                        status: Math.random() > 0.2 ? 'success' : 'error',
+                                        text: content ? content.text : 'Тестовая публикация'
+                                    };
+                                    
+                                    posts.push(post);
+                                }
+                            });
+                        }
+                    }
+                }
+                
+                localStorage.setItem('posts', JSON.stringify(posts));
+            }
+            
+            if (!localStorage.getItem('errors')) {
+                // Создаем тестовые данные для ошибок
+                const errors = [];
+                
+                // Получаем аккаунты
+                const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+                
+                // Если есть аккаунты, создаем для них ошибки
+                if (accounts.length > 0) {
+                    // Создаем ошибки за последние 7 дней
+                    for (let i = 0; i < 7; i++) {
+                        const date = new Date();
+                        date.setDate(date.getDate() - i);
+                        
+                        // Для каждого аккаунта создаем 0-2 ошибки в день
+                        accounts.forEach(account => {
+                            const errorsCount = Math.floor(Math.random() * 3);
+                            
+                            for (let j = 0; j < errorsCount; j++) {
+                                // Создаем ошибку
+                                const error = {
+                                    id: Date.now() + j + i,
+                                    account: account.id,
+                                    social: account.social,
+                                    date: date.toLocaleDateString() + ' ' + date.toLocaleTimeString(),
+                                    type: ['Авторизация', 'Публикация', 'Сеть', 'API'][Math.floor(Math.random() * 4)],
+                                    message: ['Ошибка авторизации', 'Не удалось опубликовать контент', 'Сетевая ошибка', 'Ошибка API'][Math.floor(Math.random() * 4)],
+                                    status: ['resolved', 'pending', 'critical'][Math.floor(Math.random() * 3)]
+                                };
+                                
+                                errors.push(error);
+                            }
+                        });
+                    }
+                }
+                
+                localStorage.setItem('errors', JSON.stringify(errors));
+            }
+            
+            // Загружаем данные при загрузке страницы
+            updateDashboardStats();
+            loadAccountStats();
+            loadPostsStats();
+            loadErrors();
+            initActivityChart();
+        });
+    </script>
+</body>
+</html>

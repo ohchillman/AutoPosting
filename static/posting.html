@@ -1,0 +1,1557 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Постинг - Система автоматизации постинга</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], 
+        input[type="password"], 
+        input[type="number"],
+        input[type="url"],
+        input[type="datetime-local"],
+        select, 
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-right: 5px;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab.active {
+            border: 1px solid #ddd;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            background-color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .nav {
+            display: flex;
+            background-color: #2c3e50;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .nav-item {
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: #3498db;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .status-active {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-inactive {
+            color: #7f8c8d;
+        }
+        .status-pending {
+            color: #f39c12;
+        }
+        .status-error {
+            color: #e74c3c;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            color: white;
+        }
+        .edit-btn {
+            background-color: #3498db;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+        .view-btn {
+            background-color: #2ecc71;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 5px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            margin-right: 15px;
+        }
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Система автоматизации постинга с антидетект браузерами</h1>
+        
+        <div class="nav">
+            <a href="index.html" class="nav-item">Главная</a>
+            <a href="settings.html" class="nav-item">Настройки</a>
+            <a href="profiles.html" class="nav-item">Профили</a>
+            <a href="content.html" class="nav-item">Контент</a>
+            <a href="posting.html" class="nav-item active">Постинг</a>
+            <a href="monitoring.html" class="nav-item">Мониторинг</a>
+        </div>
+        
+        <div class="card">
+            <h2>Управление постингом</h2>
+            
+            <div class="alert alert-info">
+                В этом разделе вы можете создавать и управлять задачами по публикации контента в социальных сетях.
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="tasks">Задачи</div>
+                <div class="tab" data-tab="schedule">Расписание</div>
+                <div class="tab" data-tab="accounts">Аккаунты</div>
+                <div class="tab" data-tab="logs">Журнал</div>
+            </div>
+            
+            <!-- Задачи -->
+            <div class="tab-content active" id="tasks-content">
+                <div class="form-group">
+                    <button id="add-task" class="btn btn-success">Создать задачу</button>
+                    <button id="refresh-tasks" class="btn">Обновить список</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="task-filter">Фильтр:</label>
+                    <select id="task-filter" name="task-filter">
+                        <option value="all">Все</option>
+                        <option value="pending">Ожидает выполнения</option>
+                        <option value="active">Активные</option>
+                        <option value="completed">Завершенные</option>
+                        <option value="error">С ошибками</option>
+                    </select>
+                </div>
+                
+                <table id="tasks-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Контент</th>
+                            <th>Соц. сети</th>
+                            <th>Запланировано на</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Задачи будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Расписание -->
+            <div class="tab-content" id="schedule-content">
+                <div class="form-group">
+                    <button id="add-schedule" class="btn btn-success">Добавить расписание</button>
+                    <button id="refresh-schedule" class="btn">Обновить список</button>
+                </div>
+                
+                <table id="schedule-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Частота</th>
+                            <th>Соц. сети</th>
+                            <th>Следующий запуск</th>
+                            <th>Статус</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Расписания будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Аккаунты -->
+            <div class="tab-content" id="accounts-content">
+                <div class="form-group">
+                    <button id="add-account" class="btn btn-success">Добавить аккаунт</button>
+                    <button id="refresh-accounts" class="btn">Обновить список</button>
+                </div>
+                
+                <table id="accounts-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Соц. сеть</th>
+                            <th>Профиль браузера</th>
+                            <th>Статус</th>
+                            <th>Последняя публикация</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Аккаунты будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Журнал -->
+            <div class="tab-content" id="logs-content">
+                <div class="form-group">
+                    <button id="refresh-logs" class="btn">Обновить журнал</button>
+                    <button id="clear-logs" class="btn btn-danger">Очистить журнал</button>
+                </div>
+                
+                <div class="form-group">
+                    <label for="logs-filter">Фильтр:</label>
+                    <select id="logs-filter" name="logs-filter">
+                        <option value="all">Все</option>
+                        <option value="info">Информация</option>
+                        <option value="warning">Предупреждения</option>
+                        <option value="error">Ошибки</option>
+                    </select>
+                </div>
+                
+                <div id="logs-container" style="max-height: 400px; overflow-y: auto; background-color: #f5f5f5; padding: 10px; border-radius: 4px; font-family: monospace;">
+                    <!-- Журнал будет добавлен через JavaScript -->
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для добавления/редактирования задачи -->
+    <div id="task-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="task-modal-title">Создать задачу</h2>
+            
+            <form id="task-form">
+                <input type="hidden" id="task-id" name="task-id" value="">
+                
+                <div class="form-group">
+                    <label for="task-name">Название задачи:</label>
+                    <input type="text" id="task-name" name="task-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="task-content">Контент:</label>
+                    <select id="task-content" name="task-content" required>
+                        <!-- Контент будет добавлен через JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="task-template">Шаблон:</label>
+                    <select id="task-template" name="task-template" required>
+                        <!-- Шаблоны будут добавлены через JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label>Социальные сети:</label>
+                    <div class="checkbox-group" id="task-social-networks">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="task-twitter" name="task-social[]" value="twitter">
+                            <label for="task-twitter">Twitter</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="task-linkedin" name="task-social[]" value="linkedin">
+                            <label for="task-linkedin">LinkedIn</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="task-youtube" name="task-social[]" value="youtube">
+                            <label for="task-youtube">YouTube Blog</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="task-threads" name="task-social[]" value="threads">
+                            <label for="task-threads">Threads</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="task-scheduled">Запланировано на:</label>
+                    <input type="datetime-local" id="task-scheduled" name="task-scheduled" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="task-status">Статус:</label>
+                    <select id="task-status" name="task-status" required>
+                        <option value="pending">Ожидает выполнения</option>
+                        <option value="active">Активная</option>
+                        <option value="completed">Завершена</option>
+                        <option value="error">Ошибка</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="task-notes">Примечания:</label>
+                    <textarea id="task-notes" name="task-notes"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Сохранить</button>
+                <button type="button" class="btn" id="cancel-task">Отмена</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для добавления/редактирования расписания -->
+    <div id="schedule-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="schedule-modal-title">Добавить расписание</h2>
+            
+            <form id="schedule-form">
+                <input type="hidden" id="schedule-id" name="schedule-id" value="">
+                
+                <div class="form-group">
+                    <label for="schedule-name">Название расписания:</label>
+                    <input type="text" id="schedule-name" name="schedule-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="schedule-frequency">Частота:</label>
+                    <select id="schedule-frequency" name="schedule-frequency" required>
+                        <option value="hourly">Каждый час</option>
+                        <option value="daily">Ежедневно</option>
+                        <option value="weekly">Еженедельно</option>
+                        <option value="monthly">Ежемесячно</option>
+                        <option value="custom">Пользовательская</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="schedule-custom-container" style="display: none;">
+                    <label for="schedule-custom">Пользовательская частота (в минутах):</label>
+                    <input type="number" id="schedule-custom" name="schedule-custom" min="5" value="60">
+                </div>
+                
+                <div class="form-group">
+                    <label for="schedule-time">Время запуска:</label>
+                    <input type="time" id="schedule-time" name="schedule-time" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>Социальные сети:</label>
+                    <div class="checkbox-group" id="schedule-social-networks">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="schedule-twitter" name="schedule-social[]" value="twitter">
+                            <label for="schedule-twitter">Twitter</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="schedule-linkedin" name="schedule-social[]" value="linkedin">
+                            <label for="schedule-linkedin">LinkedIn</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="schedule-youtube" name="schedule-social[]" value="youtube">
+                            <label for="schedule-youtube">YouTube Blog</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="schedule-threads" name="schedule-social[]" value="threads">
+                            <label for="schedule-threads">Threads</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="schedule-template">Шаблон:</label>
+                    <select id="schedule-template" name="schedule-template" required>
+                        <!-- Шаблоны будут добавлены через JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="schedule-status">Статус:</label>
+                    <select id="schedule-status" name="schedule-status" required>
+                        <option value="active">Активно</option>
+                        <option value="inactive">Неактивно</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="schedule-notes">Примечания:</label>
+                    <textarea id="schedule-notes" name="schedule-notes"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Сохранить</button>
+                <button type="button" class="btn" id="cancel-schedule">Отмена</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для добавления/редактирования аккаунта -->
+    <div id="account-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="account-modal-title">Добавить аккаунт</h2>
+            
+            <form id="account-form">
+                <input type="hidden" id="account-id" name="account-id" value="">
+                
+                <div class="form-group">
+                    <label for="account-name">Название аккаунта:</label>
+                    <input type="text" id="account-name" name="account-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="account-social">Социальная сеть:</label>
+                    <select id="account-social" name="account-social" required>
+                        <option value="twitter">Twitter</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="youtube">YouTube Blog</option>
+                        <option value="threads">Threads</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="account-profile">Профиль браузера:</label>
+                    <select id="account-profile" name="account-profile" required>
+                        <!-- Профили будут добавлены через JavaScript -->
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="account-username">Имя пользователя:</label>
+                    <input type="text" id="account-username" name="account-username" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="account-status">Статус:</label>
+                    <select id="account-status" name="account-status" required>
+                        <option value="active">Активен</option>
+                        <option value="inactive">Неактивен</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="account-tone">Тон сообщений:</label>
+                    <select id="account-tone" name="account-tone" required>
+                        <option value="professional">Профессиональный</option>
+                        <option value="casual">Повседневный</option>
+                        <option value="enthusiastic">Восторженный</option>
+                        <option value="informative">Информативный</option>
+                        <option value="humorous">Юмористический</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="account-notes">Примечания:</label>
+                    <textarea id="account-notes" name="account-notes"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Сохранить</button>
+                <button type="button" class="btn" id="cancel-account">Отмена</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Функционал для работы с вкладками
+            const tabs = document.querySelectorAll('.tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Удаляем активный класс со всех вкладок
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Скрываем все содержимое вкладок
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Добавляем активный класс к выбранной вкладке
+                    this.classList.add('active');
+                    
+                    // Показываем содержимое выбранной вкладки
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId + '-content').classList.add('active');
+                });
+            });
+            
+            // Модальные окна
+            const taskModal = document.getElementById('task-modal');
+            const scheduleModal = document.getElementById('schedule-modal');
+            const accountModal = document.getElementById('account-modal');
+            
+            // Закрытие модальных окон
+            document.querySelectorAll('.close, #cancel-task, #cancel-schedule, #cancel-account').forEach(element => {
+                element.addEventListener('click', function() {
+                    taskModal.style.display = 'none';
+                    scheduleModal.style.display = 'none';
+                    accountModal.style.display = 'none';
+                });
+            });
+            
+            // Закрытие модальных окон при клике вне их области
+            window.addEventListener('click', function(event) {
+                if (event.target === taskModal) {
+                    taskModal.style.display = 'none';
+                }
+                if (event.target === scheduleModal) {
+                    scheduleModal.style.display = 'none';
+                }
+                if (event.target === accountModal) {
+                    accountModal.style.display = 'none';
+                }
+            });
+            
+            // Открытие модальных окон
+            document.getElementById('add-task').addEventListener('click', function() {
+                document.getElementById('task-modal-title').textContent = 'Создать задачу';
+                document.getElementById('task-form').reset();
+                document.getElementById('task-id').value = '';
+                
+                // Устанавливаем текущую дату и время + 1 час для планирования
+                const now = new Date();
+                now.setHours(now.getHours() + 1);
+                const dateTimeString = now.toISOString().slice(0, 16);
+                document.getElementById('task-scheduled').value = dateTimeString;
+                
+                taskModal.style.display = 'block';
+            });
+            
+            document.getElementById('add-schedule').addEventListener('click', function() {
+                document.getElementById('schedule-modal-title').textContent = 'Добавить расписание';
+                document.getElementById('schedule-form').reset();
+                document.getElementById('schedule-id').value = '';
+                scheduleModal.style.display = 'block';
+            });
+            
+            document.getElementById('add-account').addEventListener('click', function() {
+                document.getElementById('account-modal-title').textContent = 'Добавить аккаунт';
+                document.getElementById('account-form').reset();
+                document.getElementById('account-id').value = '';
+                accountModal.style.display = 'block';
+            });
+            
+            // Обработка изменения частоты расписания
+            document.getElementById('schedule-frequency').addEventListener('change', function() {
+                const customContainer = document.getElementById('schedule-custom-container');
+                if (this.value === 'custom') {
+                    customContainer.style.display = 'block';
+                } else {
+                    customContainer.style.display = 'none';
+                }
+            });
+            
+            // Обработка отправки форм
+            document.getElementById('task-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Получаем выбранные социальные сети
+                const socialNetworks = [];
+                document.querySelectorAll('input[name="task-social[]"]:checked').forEach(checkbox => {
+                    socialNetworks.push(checkbox.value);
+                });
+                
+                if (socialNetworks.length === 0) {
+                    alert('Выберите хотя бы одну социальную сеть!');
+                    return;
+                }
+                
+                // Сохранение задачи
+                const taskId = document.getElementById('task-id').value || Date.now().toString();
+                const taskName = document.getElementById('task-name').value;
+                const taskContent = document.getElementById('task-content').value;
+                const taskTemplate = document.getElementById('task-template').value;
+                const taskScheduled = document.getElementById('task-scheduled').value;
+                const taskStatus = document.getElementById('task-status').value;
+                const taskNotes = document.getElementById('task-notes').value;
+                
+                // Создаем объект задачи
+                const task = {
+                    id: taskId,
+                    name: taskName,
+                    content: taskContent,
+                    template: taskTemplate,
+                    socialNetworks: socialNetworks,
+                    scheduled: taskScheduled,
+                    status: taskStatus,
+                    notes: taskNotes,
+                    created: new Date().toLocaleString()
+                };
+                
+                // Сохраняем задачу в localStorage
+                saveTask(task);
+                
+                // Обновляем таблицу задач
+                loadTasks();
+                
+                // Закрываем модальное окно
+                taskModal.style.display = 'none';
+                
+                // Показываем уведомление
+                alert('Задача успешно сохранена!');
+                
+                // Добавляем запись в журнал
+                addLogEntry(`Задача "${taskName}" создана/обновлена`, 'info');
+            });
+            
+            document.getElementById('schedule-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Получаем выбранные социальные сети
+                const socialNetworks = [];
+                document.querySelectorAll('input[name="schedule-social[]"]:checked').forEach(checkbox => {
+                    socialNetworks.push(checkbox.value);
+                });
+                
+                if (socialNetworks.length === 0) {
+                    alert('Выберите хотя бы одну социальную сеть!');
+                    return;
+                }
+                
+                // Сохранение расписания
+                const scheduleId = document.getElementById('schedule-id').value || Date.now().toString();
+                const scheduleName = document.getElementById('schedule-name').value;
+                const scheduleFrequency = document.getElementById('schedule-frequency').value;
+                const scheduleCustom = document.getElementById('schedule-custom').value;
+                const scheduleTime = document.getElementById('schedule-time').value;
+                const scheduleTemplate = document.getElementById('schedule-template').value;
+                const scheduleStatus = document.getElementById('schedule-status').value;
+                const scheduleNotes = document.getElementById('schedule-notes').value;
+                
+                // Вычисляем следующий запуск
+                const now = new Date();
+                const [hours, minutes] = scheduleTime.split(':').map(Number);
+                now.setHours(hours, minutes, 0, 0);
+                
+                if (now < new Date()) {
+                    // Если время уже прошло, добавляем день
+                    now.setDate(now.getDate() + 1);
+                }
+                
+                // Создаем объект расписания
+                const schedule = {
+                    id: scheduleId,
+                    name: scheduleName,
+                    frequency: scheduleFrequency,
+                    customMinutes: scheduleFrequency === 'custom' ? scheduleCustom : null,
+                    time: scheduleTime,
+                    socialNetworks: socialNetworks,
+                    template: scheduleTemplate,
+                    status: scheduleStatus,
+                    notes: scheduleNotes,
+                    nextRun: now.toLocaleString(),
+                    created: new Date().toLocaleString()
+                };
+                
+                // Сохраняем расписание в localStorage
+                saveSchedule(schedule);
+                
+                // Обновляем таблицу расписаний
+                loadSchedules();
+                
+                // Закрываем модальное окно
+                scheduleModal.style.display = 'none';
+                
+                // Показываем уведомление
+                alert('Расписание успешно сохранено!');
+                
+                // Добавляем запись в журнал
+                addLogEntry(`Расписание "${scheduleName}" создано/обновлено`, 'info');
+            });
+            
+            document.getElementById('account-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Сохранение аккаунта
+                const accountId = document.getElementById('account-id').value || Date.now().toString();
+                const accountName = document.getElementById('account-name').value;
+                const accountSocial = document.getElementById('account-social').value;
+                const accountProfile = document.getElementById('account-profile').value;
+                const accountUsername = document.getElementById('account-username').value;
+                const accountStatus = document.getElementById('account-status').value;
+                const accountTone = document.getElementById('account-tone').value;
+                const accountNotes = document.getElementById('account-notes').value;
+                
+                // Создаем объект аккаунта
+                const account = {
+                    id: accountId,
+                    name: accountName,
+                    social: accountSocial,
+                    profile: accountProfile,
+                    username: accountUsername,
+                    status: accountStatus,
+                    tone: accountTone,
+                    notes: accountNotes,
+                    lastPosted: '-',
+                    created: new Date().toLocaleString()
+                };
+                
+                // Сохраняем аккаунт в localStorage
+                saveAccount(account);
+                
+                // Обновляем таблицу аккаунтов
+                loadAccounts();
+                
+                // Закрываем модальное окно
+                accountModal.style.display = 'none';
+                
+                // Показываем уведомление
+                alert('Аккаунт успешно сохранен!');
+                
+                // Добавляем запись в журнал
+                addLogEntry(`Аккаунт "${accountName}" создан/обновлен`, 'info');
+            });
+            
+            // Функции для работы с данными
+            function saveTask(task) {
+                let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+                const index = tasks.findIndex(t => t.id === task.id);
+                
+                if (index !== -1) {
+                    tasks[index] = task;
+                } else {
+                    tasks.push(task);
+                }
+                
+                localStorage.setItem('tasks', JSON.stringify(tasks));
+            }
+            
+            function saveSchedule(schedule) {
+                let schedules = JSON.parse(localStorage.getItem('schedules') || '[]');
+                const index = schedules.findIndex(s => s.id === schedule.id);
+                
+                if (index !== -1) {
+                    schedules[index] = schedule;
+                } else {
+                    schedules.push(schedule);
+                }
+                
+                localStorage.setItem('schedules', JSON.stringify(schedules));
+            }
+            
+            function saveAccount(account) {
+                let accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+                const index = accounts.findIndex(a => a.id === account.id);
+                
+                if (index !== -1) {
+                    accounts[index] = account;
+                } else {
+                    accounts.push(account);
+                }
+                
+                localStorage.setItem('accounts', JSON.stringify(accounts));
+            }
+            
+            function addLogEntry(message, level = 'info') {
+                let logs = JSON.parse(localStorage.getItem('logs') || '[]');
+                
+                const log = {
+                    id: Date.now().toString(),
+                    timestamp: new Date().toLocaleString(),
+                    message: message,
+                    level: level
+                };
+                
+                logs.push(log);
+                
+                // Ограничиваем количество записей в журнале
+                if (logs.length > 100) {
+                    logs = logs.slice(-100);
+                }
+                
+                localStorage.setItem('logs', JSON.stringify(logs));
+                
+                // Обновляем отображение журнала, если он открыт
+                if (document.querySelector('.tab[data-tab="logs"]').classList.contains('active')) {
+                    loadLogs();
+                }
+            }
+            
+            function loadTasks() {
+                const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+                const tbody = document.querySelector('#tasks-table tbody');
+                tbody.innerHTML = '';
+                
+                // Получаем выбранный фильтр
+                const filter = document.getElementById('task-filter').value;
+                
+                // Фильтруем задачи
+                const filteredTasks = filter === 'all' ? tasks : tasks.filter(task => task.status === filter);
+                
+                filteredTasks.forEach(task => {
+                    const row = document.createElement('tr');
+                    
+                    // Форматируем статус
+                    let statusClass = '';
+                    let statusText = '';
+                    
+                    switch(task.status) {
+                        case 'pending':
+                            statusClass = 'status-pending';
+                            statusText = 'Ожидает выполнения';
+                            break;
+                        case 'active':
+                            statusClass = 'status-active';
+                            statusText = 'Активная';
+                            break;
+                        case 'completed':
+                            statusClass = 'status-inactive';
+                            statusText = 'Завершена';
+                            break;
+                        case 'error':
+                            statusClass = 'status-error';
+                            statusText = 'Ошибка';
+                            break;
+                        default:
+                            statusClass = '';
+                            statusText = task.status;
+                    }
+                    
+                    // Форматируем социальные сети
+                    const socialNetworks = task.socialNetworks.map(social => {
+                        switch(social) {
+                            case 'twitter': return 'Twitter';
+                            case 'linkedin': return 'LinkedIn';
+                            case 'youtube': return 'YouTube Blog';
+                            case 'threads': return 'Threads';
+                            default: return social;
+                        }
+                    }).join(', ');
+                    
+                    // Получаем название контента
+                    const contents = JSON.parse(localStorage.getItem('contents') || '[]');
+                    const content = contents.find(c => c.id === task.content);
+                    const contentName = content ? content.title : task.content;
+                    
+                    row.innerHTML = `
+                        <td>${task.id}</td>
+                        <td>${task.name}</td>
+                        <td>${contentName}</td>
+                        <td>${socialNetworks}</td>
+                        <td>${task.scheduled}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn view-btn" data-id="${task.id}" data-type="task">Просмотр</button>
+                            <button class="action-btn edit-btn" data-id="${task.id}" data-type="task">Изменить</button>
+                            <button class="action-btn delete-btn" data-id="${task.id}" data-type="task">Удалить</button>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Добавляем обработчики для кнопок действий
+                document.querySelectorAll('.edit-btn[data-type="task"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const taskId = this.getAttribute('data-id');
+                        editTask(taskId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-btn[data-type="task"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const taskId = this.getAttribute('data-id');
+                        deleteTask(taskId);
+                    });
+                });
+                
+                document.querySelectorAll('.view-btn[data-type="task"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const taskId = this.getAttribute('data-id');
+                        viewTask(taskId);
+                    });
+                });
+            }
+            
+            function loadSchedules() {
+                const schedules = JSON.parse(localStorage.getItem('schedules') || '[]');
+                const tbody = document.querySelector('#schedule-table tbody');
+                tbody.innerHTML = '';
+                
+                schedules.forEach(schedule => {
+                    const row = document.createElement('tr');
+                    
+                    // Форматируем статус
+                    const statusClass = schedule.status === 'active' ? 'status-active' : 'status-inactive';
+                    const statusText = schedule.status === 'active' ? 'Активно' : 'Неактивно';
+                    
+                    // Форматируем частоту
+                    let frequencyText = '';
+                    switch(schedule.frequency) {
+                        case 'hourly': frequencyText = 'Каждый час'; break;
+                        case 'daily': frequencyText = 'Ежедневно'; break;
+                        case 'weekly': frequencyText = 'Еженедельно'; break;
+                        case 'monthly': frequencyText = 'Ежемесячно'; break;
+                        case 'custom': frequencyText = `Каждые ${schedule.customMinutes} минут`; break;
+                        default: frequencyText = schedule.frequency;
+                    }
+                    
+                    // Форматируем социальные сети
+                    const socialNetworks = schedule.socialNetworks.map(social => {
+                        switch(social) {
+                            case 'twitter': return 'Twitter';
+                            case 'linkedin': return 'LinkedIn';
+                            case 'youtube': return 'YouTube Blog';
+                            case 'threads': return 'Threads';
+                            default: return social;
+                        }
+                    }).join(', ');
+                    
+                    row.innerHTML = `
+                        <td>${schedule.id}</td>
+                        <td>${schedule.name}</td>
+                        <td>${frequencyText}</td>
+                        <td>${socialNetworks}</td>
+                        <td>${schedule.nextRun}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                        <td class="action-buttons">
+                            <button class="action-btn view-btn" data-id="${schedule.id}" data-type="schedule">Просмотр</button>
+                            <button class="action-btn edit-btn" data-id="${schedule.id}" data-type="schedule">Изменить</button>
+                            <button class="action-btn delete-btn" data-id="${schedule.id}" data-type="schedule">Удалить</button>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Добавляем обработчики для кнопок действий
+                document.querySelectorAll('.edit-btn[data-type="schedule"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const scheduleId = this.getAttribute('data-id');
+                        editSchedule(scheduleId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-btn[data-type="schedule"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const scheduleId = this.getAttribute('data-id');
+                        deleteSchedule(scheduleId);
+                    });
+                });
+                
+                document.querySelectorAll('.view-btn[data-type="schedule"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const scheduleId = this.getAttribute('data-id');
+                        viewSchedule(scheduleId);
+                    });
+                });
+            }
+            
+            function loadAccounts() {
+                const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+                const tbody = document.querySelector('#accounts-table tbody');
+                tbody.innerHTML = '';
+                
+                accounts.forEach(account => {
+                    const row = document.createElement('tr');
+                    
+                    // Форматируем статус
+                    const statusClass = account.status === 'active' ? 'status-active' : 'status-inactive';
+                    const statusText = account.status === 'active' ? 'Активен' : 'Неактивен';
+                    
+                    // Форматируем социальную сеть
+                    let socialText = '';
+                    switch(account.social) {
+                        case 'twitter': socialText = 'Twitter'; break;
+                        case 'linkedin': socialText = 'LinkedIn'; break;
+                        case 'youtube': socialText = 'YouTube Blog'; break;
+                        case 'threads': socialText = 'Threads'; break;
+                        default: socialText = account.social;
+                    }
+                    
+                    // Получаем название профиля
+                    const profiles = JSON.parse(localStorage.getItem('profiles') || '[]');
+                    const profile = profiles.find(p => p.id === account.profile);
+                    const profileName = profile ? profile.name : account.profile;
+                    
+                    row.innerHTML = `
+                        <td>${account.id}</td>
+                        <td>${account.name}</td>
+                        <td>${socialText}</td>
+                        <td>${profileName}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                        <td>${account.lastPosted}</td>
+                        <td class="action-buttons">
+                            <button class="action-btn view-btn" data-id="${account.id}" data-type="account">Просмотр</button>
+                            <button class="action-btn edit-btn" data-id="${account.id}" data-type="account">Изменить</button>
+                            <button class="action-btn delete-btn" data-id="${account.id}" data-type="account">Удалить</button>
+                        </td>
+                    `;
+                    
+                    tbody.appendChild(row);
+                });
+                
+                // Добавляем обработчики для кнопок действий
+                document.querySelectorAll('.edit-btn[data-type="account"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const accountId = this.getAttribute('data-id');
+                        editAccount(accountId);
+                    });
+                });
+                
+                document.querySelectorAll('.delete-btn[data-type="account"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const accountId = this.getAttribute('data-id');
+                        deleteAccount(accountId);
+                    });
+                });
+                
+                document.querySelectorAll('.view-btn[data-type="account"]').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const accountId = this.getAttribute('data-id');
+                        viewAccount(accountId);
+                    });
+                });
+            }
+            
+            function loadLogs() {
+                const logs = JSON.parse(localStorage.getItem('logs') || '[]');
+                const logsContainer = document.getElementById('logs-container');
+                
+                // Получаем выбранный фильтр
+                const filter = document.getElementById('logs-filter').value;
+                
+                // Фильтруем журнал
+                const filteredLogs = filter === 'all' ? logs : logs.filter(log => log.level === filter);
+                
+                // Сортируем по времени (новые сверху)
+                filteredLogs.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                
+                logsContainer.innerHTML = '';
+                
+                filteredLogs.forEach(log => {
+                    const logEntry = document.createElement('div');
+                    
+                    // Форматируем уровень
+                    let levelClass = '';
+                    switch(log.level) {
+                        case 'info': levelClass = 'color: #3498db;'; break;
+                        case 'warning': levelClass = 'color: #f39c12;'; break;
+                        case 'error': levelClass = 'color: #e74c3c;'; break;
+                        default: levelClass = '';
+                    }
+                    
+                    logEntry.innerHTML = `<span style="color: #7f8c8d;">[${log.timestamp}]</span> <span style="${levelClass}">[${log.level.toUpperCase()}]</span> ${log.message}`;
+                    
+                    logsContainer.appendChild(logEntry);
+                });
+                
+                // Если журнал пуст, показываем сообщение
+                if (filteredLogs.length === 0) {
+                    logsContainer.innerHTML = '<div style="text-align: center; color: #7f8c8d;">Журнал пуст</div>';
+                }
+            }
+            
+            function editTask(taskId) {
+                const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+                const task = tasks.find(t => t.id === taskId);
+                
+                if (task) {
+                    document.getElementById('task-modal-title').textContent = 'Редактировать задачу';
+                    document.getElementById('task-id').value = task.id;
+                    document.getElementById('task-name').value = task.name;
+                    document.getElementById('task-content').value = task.content;
+                    document.getElementById('task-template').value = task.template;
+                    document.getElementById('task-scheduled').value = task.scheduled;
+                    document.getElementById('task-status').value = task.status;
+                    document.getElementById('task-notes').value = task.notes || '';
+                    
+                    // Устанавливаем выбранные социальные сети
+                    document.querySelectorAll('input[name="task-social[]"]').forEach(checkbox => {
+                        checkbox.checked = task.socialNetworks.includes(checkbox.value);
+                    });
+                    
+                    taskModal.style.display = 'block';
+                }
+            }
+            
+            function deleteTask(taskId) {
+                if (confirm('Вы уверены, что хотите удалить эту задачу?')) {
+                    let tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+                    const task = tasks.find(t => t.id === taskId);
+                    
+                    tasks = tasks.filter(t => t.id !== taskId);
+                    localStorage.setItem('tasks', JSON.stringify(tasks));
+                    
+                    loadTasks();
+                    
+                    alert('Задача успешно удалена!');
+                    
+                    // Добавляем запись в журнал
+                    if (task) {
+                        addLogEntry(`Задача "${task.name}" удалена`, 'warning');
+                    }
+                }
+            }
+            
+            function viewTask(taskId) {
+                const tasks = JSON.parse(localStorage.getItem('tasks') || '[]');
+                const task = tasks.find(t => t.id === taskId);
+                
+                if (task) {
+                    // Получаем название контента
+                    const contents = JSON.parse(localStorage.getItem('contents') || '[]');
+                    const content = contents.find(c => c.id === task.content);
+                    const contentName = content ? content.title : task.content;
+                    
+                    // Получаем название шаблона
+                    const templates = JSON.parse(localStorage.getItem('templates') || '[]');
+                    const template = templates.find(t => t.id === task.template);
+                    const templateName = template ? template.name : task.template;
+                    
+                    // Форматируем социальные сети
+                    const socialNetworks = task.socialNetworks.map(social => {
+                        switch(social) {
+                            case 'twitter': return 'Twitter';
+                            case 'linkedin': return 'LinkedIn';
+                            case 'youtube': return 'YouTube Blog';
+                            case 'threads': return 'Threads';
+                            default: return social;
+                        }
+                    }).join(', ');
+                    
+                    // Форматируем статус
+                    let statusText = '';
+                    switch(task.status) {
+                        case 'pending': statusText = 'Ожидает выполнения'; break;
+                        case 'active': statusText = 'Активная'; break;
+                        case 'completed': statusText = 'Завершена'; break;
+                        case 'error': statusText = 'Ошибка'; break;
+                        default: statusText = task.status;
+                    }
+                    
+                    alert(`Задача: ${task.name}\n\nКонтент: ${contentName}\n\nШаблон: ${templateName}\n\nСоциальные сети: ${socialNetworks}\n\nЗапланировано на: ${task.scheduled}\n\nСтатус: ${statusText}\n\nПримечания: ${task.notes || '-'}\n\nСоздана: ${task.created}`);
+                }
+            }
+            
+            function editSchedule(scheduleId) {
+                const schedules = JSON.parse(localStorage.getItem('schedules') || '[]');
+                const schedule = schedules.find(s => s.id === scheduleId);
+                
+                if (schedule) {
+                    document.getElementById('schedule-modal-title').textContent = 'Редактировать расписание';
+                    document.getElementById('schedule-id').value = schedule.id;
+                    document.getElementById('schedule-name').value = schedule.name;
+                    document.getElementById('schedule-frequency').value = schedule.frequency;
+                    
+                    if (schedule.frequency === 'custom') {
+                        document.getElementById('schedule-custom-container').style.display = 'block';
+                        document.getElementById('schedule-custom').value = schedule.customMinutes;
+                    } else {
+                        document.getElementById('schedule-custom-container').style.display = 'none';
+                    }
+                    
+                    document.getElementById('schedule-time').value = schedule.time;
+                    document.getElementById('schedule-template').value = schedule.template;
+                    document.getElementById('schedule-status').value = schedule.status;
+                    document.getElementById('schedule-notes').value = schedule.notes || '';
+                    
+                    // Устанавливаем выбранные социальные сети
+                    document.querySelectorAll('input[name="schedule-social[]"]').forEach(checkbox => {
+                        checkbox.checked = schedule.socialNetworks.includes(checkbox.value);
+                    });
+                    
+                    scheduleModal.style.display = 'block';
+                }
+            }
+            
+            function deleteSchedule(scheduleId) {
+                if (confirm('Вы уверены, что хотите удалить это расписание?')) {
+                    let schedules = JSON.parse(localStorage.getItem('schedules') || '[]');
+                    const schedule = schedules.find(s => s.id === scheduleId);
+                    
+                    schedules = schedules.filter(s => s.id !== scheduleId);
+                    localStorage.setItem('schedules', JSON.stringify(schedules));
+                    
+                    loadSchedules();
+                    
+                    alert('Расписание успешно удалено!');
+                    
+                    // Добавляем запись в журнал
+                    if (schedule) {
+                        addLogEntry(`Расписание "${schedule.name}" удалено`, 'warning');
+                    }
+                }
+            }
+            
+            function viewSchedule(scheduleId) {
+                const schedules = JSON.parse(localStorage.getItem('schedules') || '[]');
+                const schedule = schedules.find(s => s.id === scheduleId);
+                
+                if (schedule) {
+                    // Форматируем частоту
+                    let frequencyText = '';
+                    switch(schedule.frequency) {
+                        case 'hourly': frequencyText = 'Каждый час'; break;
+                        case 'daily': frequencyText = 'Ежедневно'; break;
+                        case 'weekly': frequencyText = 'Еженедельно'; break;
+                        case 'monthly': frequencyText = 'Ежемесячно'; break;
+                        case 'custom': frequencyText = `Каждые ${schedule.customMinutes} минут`; break;
+                        default: frequencyText = schedule.frequency;
+                    }
+                    
+                    // Получаем название шаблона
+                    const templates = JSON.parse(localStorage.getItem('templates') || '[]');
+                    const template = templates.find(t => t.id === schedule.template);
+                    const templateName = template ? template.name : schedule.template;
+                    
+                    // Форматируем социальные сети
+                    const socialNetworks = schedule.socialNetworks.map(social => {
+                        switch(social) {
+                            case 'twitter': return 'Twitter';
+                            case 'linkedin': return 'LinkedIn';
+                            case 'youtube': return 'YouTube Blog';
+                            case 'threads': return 'Threads';
+                            default: return social;
+                        }
+                    }).join(', ');
+                    
+                    alert(`Расписание: ${schedule.name}\n\nЧастота: ${frequencyText}\n\nВремя запуска: ${schedule.time}\n\nСоциальные сети: ${socialNetworks}\n\nШаблон: ${templateName}\n\nСтатус: ${schedule.status === 'active' ? 'Активно' : 'Неактивно'}\n\nСледующий запуск: ${schedule.nextRun}\n\nПримечания: ${schedule.notes || '-'}\n\nСоздано: ${schedule.created}`);
+                }
+            }
+            
+            function editAccount(accountId) {
+                const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+                const account = accounts.find(a => a.id === accountId);
+                
+                if (account) {
+                    document.getElementById('account-modal-title').textContent = 'Редактировать аккаунт';
+                    document.getElementById('account-id').value = account.id;
+                    document.getElementById('account-name').value = account.name;
+                    document.getElementById('account-social').value = account.social;
+                    document.getElementById('account-profile').value = account.profile;
+                    document.getElementById('account-username').value = account.username;
+                    document.getElementById('account-status').value = account.status;
+                    document.getElementById('account-tone').value = account.tone;
+                    document.getElementById('account-notes').value = account.notes || '';
+                    
+                    accountModal.style.display = 'block';
+                }
+            }
+            
+            function deleteAccount(accountId) {
+                if (confirm('Вы уверены, что хотите удалить этот аккаунт?')) {
+                    let accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+                    const account = accounts.find(a => a.id === accountId);
+                    
+                    accounts = accounts.filter(a => a.id !== accountId);
+                    localStorage.setItem('accounts', JSON.stringify(accounts));
+                    
+                    loadAccounts();
+                    
+                    alert('Аккаунт успешно удален!');
+                    
+                    // Добавляем запись в журнал
+                    if (account) {
+                        addLogEntry(`Аккаунт "${account.name}" удален`, 'warning');
+                    }
+                }
+            }
+            
+            function viewAccount(accountId) {
+                const accounts = JSON.parse(localStorage.getItem('accounts') || '[]');
+                const account = accounts.find(a => a.id === accountId);
+                
+                if (account) {
+                    // Форматируем социальную сеть
+                    let socialText = '';
+                    switch(account.social) {
+                        case 'twitter': socialText = 'Twitter'; break;
+                        case 'linkedin': socialText = 'LinkedIn'; break;
+                        case 'youtube': socialText = 'YouTube Blog'; break;
+                        case 'threads': socialText = 'Threads'; break;
+                        default: socialText = account.social;
+                    }
+                    
+                    // Получаем название профиля
+                    const profiles = JSON.parse(localStorage.getItem('profiles') || '[]');
+                    const profile = profiles.find(p => p.id === account.profile);
+                    const profileName = profile ? profile.name : account.profile;
+                    
+                    // Форматируем тон
+                    let toneText = '';
+                    switch(account.tone) {
+                        case 'professional': toneText = 'Профессиональный'; break;
+                        case 'casual': toneText = 'Повседневный'; break;
+                        case 'enthusiastic': toneText = 'Восторженный'; break;
+                        case 'informative': toneText = 'Информативный'; break;
+                        case 'humorous': toneText = 'Юмористический'; break;
+                        default: toneText = account.tone;
+                    }
+                    
+                    alert(`Аккаунт: ${account.name}\n\nСоциальная сеть: ${socialText}\n\nПрофиль браузера: ${profileName}\n\nИмя пользователя: ${account.username}\n\nСтатус: ${account.status === 'active' ? 'Активен' : 'Неактивен'}\n\nТон сообщений: ${toneText}\n\nПоследняя публикация: ${account.lastPosted}\n\nПримечания: ${account.notes || '-'}\n\nСоздан: ${account.created}`);
+                }
+            }
+            
+            // Обработчики для кнопок
+            document.getElementById('refresh-tasks').addEventListener('click', function() {
+                loadTasks();
+                alert('Список задач обновлен!');
+            });
+            
+            document.getElementById('refresh-schedule').addEventListener('click', function() {
+                loadSchedules();
+                alert('Список расписаний обновлен!');
+            });
+            
+            document.getElementById('refresh-accounts').addEventListener('click', function() {
+                loadAccounts();
+                alert('Список аккаунтов обновлен!');
+            });
+            
+            document.getElementById('refresh-logs').addEventListener('click', function() {
+                loadLogs();
+                alert('Журнал обновлен!');
+            });
+            
+            document.getElementById('clear-logs').addEventListener('click', function() {
+                if (confirm('Вы уверены, что хотите очистить журнал?')) {
+                    localStorage.setItem('logs', '[]');
+                    loadLogs();
+                    alert('Журнал очищен!');
+                }
+            });
+            
+            document.getElementById('task-filter').addEventListener('change', function() {
+                loadTasks();
+            });
+            
+            document.getElementById('logs-filter').addEventListener('change', function() {
+                loadLogs();
+            });
+            
+            // Загружаем данные при загрузке страницы
+            loadTasks();
+            loadSchedules();
+            loadAccounts();
+            loadLogs();
+            
+            // Заполняем выпадающие списки
+            
+            // Контент
+            const contents = JSON.parse(localStorage.getItem('contents') || '[]');
+            const contentSelect = document.getElementById('task-content');
+            
+            contentSelect.innerHTML = '';
+            
+            contents.forEach(content => {
+                const option = document.createElement('option');
+                option.value = content.id;
+                option.textContent = content.title;
+                contentSelect.appendChild(option);
+            });
+            
+            // Если нет контента, добавляем заглушку
+            if (contents.length === 0) {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'Нет доступного контента';
+                contentSelect.appendChild(option);
+            }
+            
+            // Шаблоны
+            const templates = JSON.parse(localStorage.getItem('templates') || '[]');
+            const taskTemplateSelect = document.getElementById('task-template');
+            const scheduleTemplateSelect = document.getElementById('schedule-template');
+            
+            taskTemplateSelect.innerHTML = '';
+            scheduleTemplateSelect.innerHTML = '';
+            
+            templates.forEach(template => {
+                const option1 = document.createElement('option');
+                option1.value = template.id;
+                option1.textContent = template.name;
+                taskTemplateSelect.appendChild(option1);
+                
+                const option2 = document.createElement('option');
+                option2.value = template.id;
+                option2.textContent = template.name;
+                scheduleTemplateSelect.appendChild(option2);
+            });
+            
+            // Если нет шаблонов, добавляем заглушку
+            if (templates.length === 0) {
+                const option1 = document.createElement('option');
+                option1.value = '';
+                option1.textContent = 'Нет доступных шаблонов';
+                taskTemplateSelect.appendChild(option1);
+                
+                const option2 = document.createElement('option');
+                option2.value = '';
+                option2.textContent = 'Нет доступных шаблонов';
+                scheduleTemplateSelect.appendChild(option2);
+            }
+            
+            // Профили
+            const profiles = JSON.parse(localStorage.getItem('profiles') || '[]');
+            const profileSelect = document.getElementById('account-profile');
+            
+            profileSelect.innerHTML = '';
+            
+            profiles.forEach(profile => {
+                const option = document.createElement('option');
+                option.value = profile.id;
+                option.textContent = profile.name;
+                profileSelect.appendChild(option);
+            });
+            
+            // Если нет профилей, добавляем заглушку
+            if (profiles.length === 0) {
+                const option = document.createElement('option');
+                option.value = '';
+                option.textContent = 'Нет доступных профилей';
+                profileSelect.appendChild(option);
+            }
+            
+            // Добавляем начальные записи в журнал
+            if (JSON.parse(localStorage.getItem('logs') || '[]').length === 0) {
+                addLogEntry('Система инициализирована', 'info');
+                addLogEntry('Готов к работе с 13 аккаунтами в 4 социальных сетях', 'info');
+            }
+        });
+    </script>
+</body>
+</html>

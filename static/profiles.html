@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Профили браузеров - Антидетект браузеры</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: #333;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+        .card {
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .btn {
+            display: inline-block;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+        .btn:hover {
+            background-color: #2980b9;
+        }
+        .btn-success {
+            background-color: #2ecc71;
+        }
+        .btn-success:hover {
+            background-color: #27ae60;
+        }
+        .btn-danger {
+            background-color: #e74c3c;
+        }
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+        .alert {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .alert-success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .alert-danger {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .alert-info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #f5f5f5;
+        }
+        .status-active {
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .status-inactive {
+            color: #7f8c8d;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input[type="text"], 
+        input[type="password"], 
+        input[type="number"],
+        input[type="url"],
+        select, 
+        textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #ddd;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            margin-right: 5px;
+            border: 1px solid transparent;
+            border-radius: 4px 4px 0 0;
+        }
+        .tab.active {
+            border: 1px solid #ddd;
+            border-bottom: 1px solid white;
+            margin-bottom: -1px;
+            background-color: white;
+        }
+        .tab-content {
+            display: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .nav {
+            display: flex;
+            background-color: #2c3e50;
+            padding: 0;
+            margin-bottom: 20px;
+        }
+        .nav-item {
+            padding: 15px 20px;
+            color: white;
+            text-decoration: none;
+        }
+        .nav-item:hover, .nav-item.active {
+            background-color: #3498db;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.4);
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 10% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 5px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .close:hover {
+            color: black;
+        }
+        .action-buttons {
+            display: flex;
+            gap: 5px;
+        }
+        .action-btn {
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 14px;
+            border: none;
+            color: white;
+        }
+        .edit-btn {
+            background-color: #3498db;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+        }
+        .launch-btn {
+            background-color: #2ecc71;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Система автоматизации с антидетект браузерами</h1>
+        
+        <div class="nav">
+            <a href="index.html" class="nav-item">Главная</a>
+            <a href="settings.html" class="nav-item">Настройки</a>
+            <a href="profiles.html" class="nav-item active">Профили</a>
+            <a href="content.html" class="nav-item">Контент</a>
+            <a href="posting.html" class="nav-item">Постинг</a>
+            <a href="monitoring.html" class="nav-item">Мониторинг</a>
+        </div>
+        
+        <div class="card">
+            <h2>Профили браузеров</h2>
+            
+            <div class="alert alert-info">
+                Здесь вы можете управлять профилями антидетект браузеров, синхронизировать их с системой и настраивать для автоматизации.
+            </div>
+            
+            <div class="tabs">
+                <div class="tab active" data-tab="all">Все профили</div>
+                <div class="tab" data-tab="adspower">AdsPower</div>
+                <div class="tab" data-tab="dolphin">Dolphin Anty</div>
+                <div class="tab" data-tab="octo">Octo Browser</div>
+            </div>
+            
+            <div class="tab-content active" id="all-content">
+                <div class="form-group">
+                    <button id="sync-profiles" class="btn btn-success">Синхронизировать профили</button>
+                    <button id="add-profile" class="btn">Добавить профиль вручную</button>
+                </div>
+                
+                <table id="profiles-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>Тип браузера</th>
+                            <th>ID профиля</th>
+                            <th>Соц. сеть</th>
+                            <th>Статус</th>
+                            <th>Последнее использование</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Профили будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="tab-content" id="adspower-content">
+                <div class="form-group">
+                    <button id="sync-adspower" class="btn btn-success">Синхронизировать профили AdsPower</button>
+                    <button id="add-adspower" class="btn">Добавить профиль AdsPower</button>
+                </div>
+                
+                <table id="adspower-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>ID профиля</th>
+                            <th>Соц. сеть</th>
+                            <th>Статус</th>
+                            <th>Последнее использование</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Профили AdsPower будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="tab-content" id="dolphin-content">
+                <div class="form-group">
+                    <button id="sync-dolphin" class="btn btn-success">Синхронизировать профили Dolphin</button>
+                    <button id="add-dolphin" class="btn">Добавить профиль Dolphin</button>
+                </div>
+                
+                <table id="dolphin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>ID профиля</th>
+                            <th>Соц. сеть</th>
+                            <th>Статус</th>
+                            <th>Последнее использование</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Профили Dolphin будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="tab-content" id="octo-content">
+                <div class="form-group">
+                    <button id="sync-octo" class="btn btn-success">Синхронизировать профили Octo</button>
+                    <button id="add-octo" class="btn">Добавить профиль Octo</button>
+                </div>
+                
+                <table id="octo-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Название</th>
+                            <th>ID профиля</th>
+                            <th>Соц. сеть</th>
+                            <th>Статус</th>
+                            <th>Последнее использование</th>
+                            <th>Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Профили Octo будут добавлены через JavaScript -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Модальное окно для добавления/редактирования профиля -->
+    <div id="profile-modal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2 id="modal-title">Добавить профиль</h2>
+            
+            <form id="profile-form">
+                <input type="hidden" id="profile-id" name="profile-id" value="">
+                
+                <div class="form-group">
+                    <label for="profile-name">Название профиля:</label>
+                    <input type="text" id="profile-name" name="profile-name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-type">Тип браузера:</label>
+                    <select id="profile-type" name="profile-type" required>
+                        <option value="adspower">AdsPower</option>
+                        <option value="dolphin">Dolphin Anty</option>
+                        <option value="octo">Octo Browser</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-browser-id">ID профиля в браузере:</label>
+                    <input type="text" id="profile-browser-id" name="profile-browser-id" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-status">Статус:</label>
+                    <select id="profile-status" name="profile-status" required>
+                        <option value="active">Активен</option>
+                        <option value="inactive">Неактивен</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-social">Социальная сеть:</label>
+                    <select id="profile-social" name="profile-social" required>
+                        <option value="twitter">Twitter</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="youtube">YouTube Blog</option>
+                        <option value="threads">Threads</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-proxy">Прокси:</label>
+                    <input type="text" id="profile-proxy" name="profile-proxy" placeholder="ip:port:login:password">
+                </div>
+                
+                <div class="form-group">
+                    <label for="profile-notes">Примечания:</label>
+                    <textarea id="profile-notes" name="profile-notes"></textarea>
+                </div>
+                
+                <button type="submit" class="btn btn-success">Сохранить</button>
+                <button type="button" class="btn" id="cancel-profile">Отмена</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Функционал для работы с вкладками
+            const tabs = document.querySelectorAll('.tab');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Удаляем активный класс со всех вкладок
+                    tabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Скрываем все содержимое вкладок
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    // Добавляем активный класс к выбранной вкладке
+                    this.classList.add('active');
+                    
+                    // Показываем содержимое выбранной вкладки
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId + '-content').classList.add('active');
+                });
+            });
+            
+            // Модальное окно
+            const modal = document.getElementById('profile-modal');
+            const closeBtn = document.querySelector('.close');
+            const cancelBtn = document.getElementById('cancel-profile');
+            
+            // Функция для открытия модального окна
+            function openModal(title = 'Добавить профиль', profileData = null) {
+                document.getElementById('modal-title').textContent = title;
+                
+                // Если переданы данные профиля, заполняем форму
+                if (profileData) {
+                    document.getElementById('profile-id').value = profileData.id;
+                    document.getElementById('profile-name').value = profileData.name;
+                    document.getElementById('profile-type').value = profileData.type;
+                    document.getElementById('profile-browser-id').value = profileData.browserId;
+                    document.getElementById('profile-status').value = profileData.status;
+                    document.getElementById('profile-social').value = profileData.social;
+                    document.getElementById('profile-proxy').value = profileData.proxy || '';
+                    document.getElementById('profile-notes').value = profileData.notes || '';
+                } else {
+                    // Иначе очищаем форму
+                    document.getElementById('profile-form').reset();
+                    document.getElementById('profile-id').value = '';
+                }
+                
+                modal.style.display = 'block';
+            }
+            
+            // Функция для закрытия модального окна
+            function closeModal() {
+                modal.style.display = 'none';
+            }
+            
+            // Обработчики для открытия/закрытия модального окна
+            document.getElementById('add-profile').addEventListener('click', () => openModal());
+            document.getElementById('add-adspower').addEventListener('click', () => openModal('Добавить профиль AdsPower', {type: 'adspower'}));
+            document.getElementById('add-dolphin').addEventListener('click', () => openModal('Добавить профиль Dolphin', {type: 'dolphin'}));
+            document.getElementById('add-octo').addEventListener('click', () => openModal('Добавить профиль Octo', {type: 'octo'}));
+            
+            closeBtn.addEventListener('click', closeModal);
+            cancelBtn.addEventListener('click', closeModal);
+            
+            // Закрытие модального окна при клике вне его области
+            window.addEventListener('click', (event) => {
+                if (event.target === modal) {
+                    closeModal();
+                }
+            });
+            
+            // Обработка отправки формы профиля
+            document.getElementById('profile-form').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Получаем данные формы
+                const profileId = document.getElementById('profile-id').value;
+                const profileName = document.getElementById('profile-name').value;
+                const profileType = document.getElementById('profile-type').value;
+                const profileBrowserId = document.getElementById('profile-browser-id').value;
+                const profileStatus = document.getElementById('profile-status').value;
+                const profileSocial = document.getElementById('profile-social').value;
+                const profileProxy = document.getElementById('profile-proxy').value;
+                const profileNotes = document.getElementById('profile-notes').value;
+                
+                // Создаем объект профиля
+                const profile = {
+                    id: profileId || Date.now().toString(),
+                    name: profileName,
+                    type: profileType,
+                    browserId: profileBrowserId,
+                    status: profileStatus,
+                    social: profileSocial,
+                    proxy: profileProxy,
+                    notes: profileNotes,
+                    lastUsed: profileId ? getProfileById(profileId)?.lastUsed || '-' : '-'
+                };
+                
+                // Сохраняем профиль
+                saveProfile(profile);
+                
+                // Обновляем таблицы
+                loadProfiles();
+                
+                // Закрываем модальное окно
+                closeModal();
+                
+                // Показываем уведомление
+                alert('Профиль успешно сохранен!');
+            });
+            
+            // Функция для сохранения профиля
+            function saveProfile(profile) {
+                // Получаем существующие профили
+                let profiles = JSON.parse(localStorage.getItem('profiles') || '[]');
+                
+                // Проверяем, существует ли профиль с таким ID
+                const index = profiles.findIndex(p => p.id === profile.id);
+                
+                if (index !== -1) {
+                    // Обновляем существующий профиль
+                    profiles[index] = profile;
+                } else {
+                    // Добавляем новый профиль
+                    profiles.push(profile);
+                }
+                
+                // Сохраняем обновленный список профилей
+                localStorage.setItem('profiles', JSON.stringify(profiles));
+            }
+            
+            // Функция для получения профиля по ID
+            function getProfileById(id) {
+                const profiles = JSON.parse(localStorage.getItem('profiles') || '[]');
+                return profiles.find(p => p.id === id) || null;
+            }
+            
+            // Функция для удаления профиля
+            function deleteProfile(id) {
+                if (confirm('Вы уверены, что хотите удалить этот профиль?')) {
+                    // Получаем существующие профили
+                    let profiles = JSON.parse(localStorage.getItem('profiles') || '[]');
+                    
+                    // Удаляем профиль с указанным ID
+                    profiles = profiles.filter(p => p.id !== id);
+                    
+                    // Сохраняем обновленный список профилей
+                    localStorage.setItem('profiles', JSON.stringify(profiles));
+                    
+                    // Обновляем таблицы
+                    loadProfiles();
+                    
+                    // Показываем уведомление
+                    alert('Профиль успешно удален!');
+                }
+            }
+            
+            // Функция для загрузки профилей в таблицы
+            function loadProfiles() {
+                const profiles = JSON.parse(localStorage.getItem('profiles') || '[]');
+                
+                // Очищаем таблицы
+                document.querySelector('#profiles-table tbody').innerHTML = '';
+                document.querySelector('#adspower-table tbody').innerHTML = '';
+                document.querySelector('#dolphin-table tbody').innerHTML = '';
+                document.querySelector('#octo-table tbody').innerHTML = '';
+                
+                // Заполняем таблицу всех профилей
+                profiles.forEach(profile => {
+                    const row = document.createElement('tr');
+                    
+                    // Форматируем статус
+                    const statusClass = profile.status === 'active' ? 'status-active' : 'status-inactive';
+                    const statusText = profile.status === 'active' ? 'Активен' : 'Неактивен';
+                    
+                    // Форматируем социальную сеть
+                    let socialText = '';
+                    switch(profile.social) {
+                        case 'twitter': socialText = 'Twitter'; break;
+                        case 'linkedin': socialText = 'LinkedIn'; break;
+                        case 'youtube': socialText = 'YouTube Blog'; break;
+                        case 'threads': socialText = 'Threads'; break;
+                        default: socialText = profile.social;
+                    }
+                    
+                    // Создаем содержимое строки
+                    row.innerHTML = `
+                        <td>${profile.id}</td>
+                        <td>${profile.name}</td>
+                        <td>${profile.type === 'adspower' ? 'AdsPower' : profile.type === 'dolphin' ? 'Dolphin Anty' : 'Octo Browser'}</td>
+                        <td>${profile.browserId}</td>
+                        <td>${socialText}</td>
+                        <td><span class="${statusClass}">${statusText}</span></td>
+                        <td>${profile.lastUsed}</td>
+                        <td class="action-buttons">
+                            <button class="action-btn launch-btn" data-id="${profile.id}">Запустить</button>
+                            <button class="action-btn edit-btn" data-id="${profile.id}">Изменить</button>
+                            <button class="action-btn delete-btn" data-id="${profile.id}">Удалить</button>
+                        </td>
+                    `;
+                    
+                    // Добавляем строку в таблицу всех профилей
+                    document.querySelector('#profiles-table tbody').appendChild(row.cloneNode(true));
+                    
+                    // Добавляем строку в соответствующую таблицу по типу браузера
+                    if (profile.type === 'adspower' || profile.type === 'dolphin' || profile.type === 'octo') {
+                        const browserRow = row.cloneNode(true);
+                        // Удаляем столбец типа браузера для таблицы конкретного браузера
+                        browserRow.removeChild(browserRow.children[2]);
+                        document.querySelector(`#${profile.type}-table tbody`).appendChild(browserRow);
+                    }
+                });
+                
+                // Добавляем обработчики для кнопок действий
+                document.querySelectorAll('.edit-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const profileId = this.getAttribute('data-id');
+                        const profile = getProfileById(profileId);
+                        
+                        if (profile) {
+                            openModal('Редактировать профиль', profile);
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.delete-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const profileId = this.getAttribute('data-id');
+                        deleteProfile(profileId);
+                    });
+                });
+                
+                document.querySelectorAll('.launch-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const profileId = this.getAttribute('data-id');
+                        const profile = getProfileById(profileId);
+                        
+                        if (profile) {
+                            alert(`Запуск профиля: ${profile.name} (${profile.type})`);
+                            
+                            // Обновляем время последнего использования
+                            profile.lastUsed = new Date().toLocaleString();
+                            saveProfile(profile);
+                            
+                            // Обновляем таблицы
+                            loadProfiles();
+                        }
+                    });
+                });
+            }
+            
+            // Обработчики для кнопок синхронизации
+            document.getElementById('sync-profiles').addEventListener('click', function() {
+                alert('Синхронизация профилей...');
+                setTimeout(() => {
+                    alert('Профили успешно синхронизированы!');
+                    loadProfiles();
+                }, 1000);
+            });
+            
+            document.getElementById('sync-adspower').addEventListener('click', function() {
+                alert('Синхронизация профилей AdsPower...');
+                setTimeout(() => {
+                    alert('Профили AdsPower успешно синхронизированы!');
+                    loadProfiles();
+                }, 1000);
+            });
+            
+            document.getElementById('sync-dolphin').addEventListener('click', function() {
+                alert('Синхронизация профилей Dolphin...');
+                setTimeout(() => {
+                    alert('Профили Dolphin успешно синхронизированы!');
+                    loadProfiles();
+                }, 1000);
+            });
+            
+            document.getElementById('sync-octo').addEventListener('click', function() {
+                alert('Синхронизация профилей Octo...');
+                setTimeout(() => {
+                    alert('Профили Octo успешно синхронизированы!');
+                    loadProfiles();
+                }, 1000);
+            });
+            
+            // Загружаем профили при загрузке страницы
+            loadProfiles();
+        });
+    </script>
+</body>
+</html>
