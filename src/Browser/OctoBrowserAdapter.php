@@ -22,33 +22,15 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
     private $apiKey;
     
     /**
-     * ID пользователя Octo Browser
-     * 
-     * @var string
-     */
-    private $userId;
-    
-    /**
-     * ID рабочего пространства Octo Browser
-     * 
-     * @var string|null
-     */
-    private $workspaceId;
-    
-    /**
      * Конструктор
      * 
-     * @param string $apiUrl URL API Octo Browser
+     * @param string $apiUrl URL API Octo Browser (по умолчанию https://app.octobrowser.net)
      * @param string $apiKey API ключ Octo Browser
-     * @param string $userId ID пользователя Octo Browser
-     * @param string|null $workspaceId ID рабочего пространства Octo Browser
      */
-    public function __construct(string $apiUrl, string $apiKey, string $userId, ?string $workspaceId = null)
+    public function __construct(string $apiUrl = 'https://app.octobrowser.net', string $apiKey)
     {
         $this->apiUrl = rtrim($apiUrl, '/');
         $this->apiKey = $apiKey;
-        $this->userId = $userId;
-        $this->workspaceId = $workspaceId;
     }
     
     /**
@@ -59,9 +41,9 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
      */
     public function launchProfile(string $profileId): array
     {
-        $endpoint = '/api/v1/browser/start';
+        $endpoint = '/api/v2/automation/start';
         $data = [
-            'profile_id' => $profileId,
+            'uuid' => $profileId,
             'automation' => true
         ];
         
@@ -73,10 +55,10 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
         
         return [
             'status' => $response['success'],
-            'wsEndpoint' => $response['data']['ws_endpoint'] ?? null,
+            'wsEndpoint' => $response['data']['ws']['endpoint'] ?? null,
             'port' => $response['data']['port'] ?? null,
             'profileId' => $profileId,
-            'debuggerAddress' => $response['data']['debugger_address'] ?? null
+            'debuggerAddress' => $response['data']['selenium']['seleniumRemoteDebugAddress'] ?? null
         ];
     }
     
@@ -88,9 +70,9 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
      */
     public function closeProfile(string $profileId): bool
     {
-        $endpoint = '/api/v1/browser/stop';
+        $endpoint = '/api/v2/automation/stop';
         $data = [
-            'profile_id' => $profileId
+            'uuid' => $profileId
         ];
         
         $response = $this->sendRequest('POST', $endpoint, $data);
@@ -106,12 +88,8 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
      */
     public function getProfiles(array $filters = []): array
     {
-        $endpoint = '/api/v1/profiles/list';
+        $endpoint = '/api/v2/profiles/list';
         $data = [];
-        
-        if (!empty($this->workspaceId)) {
-            $data['workspace_id'] = $this->workspaceId;
-        }
         
         if (!empty($filters)) {
             $data = array_merge($data, $filters);
@@ -125,16 +103,16 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
         
         $profiles = [];
         
-        foreach ($response['data']['profiles'] ?? [] as $profile) {
+        foreach ($response['data'] ?? [] as $profile) {
             $profiles[] = [
-                'id' => $profile['id'],
-                'name' => $profile['name'],
-                'browserId' => $profile['id'],
+                'id' => $profile['uuid'],
+                'name' => $profile['title'],
+                'browserId' => $profile['uuid'],
                 'type' => 'octo',
-                'status' => $profile['status'] === 'active' ? 'active' : 'inactive',
-                'proxy' => isset($profile['proxy']) ? $profile['proxy']['host'] . ':' . $profile['proxy']['port'] : null,
+                'status' => $profile['status'] === 'ACTIVE' ? 'active' : 'inactive',
+                'proxy' => isset($profile['proxy']) ? $this->formatProxy($profile['proxy']) : null,
                 'notes' => $profile['notes'] ?? '',
-                'lastUsed' => $profile['last_used'] ?? '-'
+                'lastUsed' => $profile['lastActivity'] ?? '-'
             ];
         }
         
@@ -149,35 +127,18 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
      */
     public function createProfile(array $profileData): string
     {
-        $endpoint = '/api/v1/profiles/create';
+        $endpoint = '/api/v2/profiles/new';
         
         $data = [
-            'name' => $profileData['name'] ?? 'New Profile',
-            'platform' => $profileData['platform'] ?? 'windows',
+            'title' => $profileData['name'] ?? 'New Profile',
+            'os' => $profileData['platform'] ?? 'win',
             'browser' => $profileData['browser'] ?? 'chrome',
             'notes' => $profileData['notes'] ?? ''
         ];
         
-        if (!empty($this->workspaceId)) {
-            $data['workspace_id'] = $this->workspaceId;
-        }
-        
         // Добавляем прокси, если указан
         if (!empty($profileData['proxy'])) {
-            $proxyParts = explode(':', $profileData['proxy']);
-            
-            if (count($proxyParts) >= 2) {
-                $data['proxy'] = [
-                    'type' => 'http',
-                    'host' => $proxyParts[0],
-                    'port' => $proxyParts[1]
-                ];
-                
-                if (count($proxyParts) >= 4) {
-                    $data['proxy']['username'] = $proxyParts[2];
-                    $data['proxy']['password'] = $proxyParts[3];
-                }
-            }
+            $data['proxy'] = $this->parseProxyString($profileData['proxy']);
         }
         
         $response = $this->sendRequest('POST', $endpoint, $data);
@@ -186,7 +147,7 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
             throw new \Exception('Не удалось создать профиль Octo Browser: ' . ($response['message'] ?? 'Неизвестная ошибка'));
         }
         
-        return $response['data']['id'] ?? '';
+        return $response['data']['uuid'] ?? '';
     }
     
     /**
@@ -198,14 +159,14 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
      */
     public function updateProfile(string $profileId, array $profileData): bool
     {
-        $endpoint = '/api/v1/profiles/update';
+        $endpoint = '/api/v2/profiles/update';
         
         $data = [
-            'id' => $profileId
+            'uuid' => $profileId
         ];
         
         if (isset($profileData['name'])) {
-            $data['name'] = $profileData['name'];
+            $data['title'] = $profileData['name'];
         }
         
         if (isset($profileData['notes'])) {
@@ -214,20 +175,7 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
         
         // Обновляем прокси, если указан
         if (!empty($profileData['proxy'])) {
-            $proxyParts = explode(':', $profileData['proxy']);
-            
-            if (count($proxyParts) >= 2) {
-                $data['proxy'] = [
-                    'type' => 'http',
-                    'host' => $proxyParts[0],
-                    'port' => $proxyParts[1]
-                ];
-                
-                if (count($proxyParts) >= 4) {
-                    $data['proxy']['username'] = $proxyParts[2];
-                    $data['proxy']['password'] = $proxyParts[3];
-                }
-            }
+            $data['proxy'] = $this->parseProxyString($profileData['proxy']);
         }
         
         $response = $this->sendRequest('POST', $endpoint, $data);
@@ -243,9 +191,9 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
      */
     public function deleteProfile(string $profileId): bool
     {
-        $endpoint = '/api/v1/profiles/delete';
+        $endpoint = '/api/v2/profiles/remove';
         $data = [
-            'id' => $profileId
+            'uuid' => $profileId
         ];
         
         $response = $this->sendRequest('POST', $endpoint, $data);
@@ -261,13 +209,53 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
     public function testConnection(): bool
     {
         try {
-            $endpoint = '/api/v1/status';
-            $response = $this->sendRequest('GET', $endpoint);
+            $endpoint = '/api/v2/profiles/list';
+            $response = $this->sendRequest('GET', $endpoint, ['limit' => 1]);
             
             return isset($response['success']) && $response['success'];
         } catch (\Exception $e) {
             return false;
         }
+    }
+    
+    /**
+     * Парсит строку прокси в формат для API
+     * 
+     * @param string $proxyString Строка прокси в формате host:port:username:password
+     * @return array Данные прокси в формате для API
+     */
+    private function parseProxyString(string $proxyString): array
+    {
+        $proxyParts = explode(':', $proxyString);
+        $proxyData = [
+            'type' => 'HTTP',
+            'host' => $proxyParts[0],
+            'port' => (int)($proxyParts[1] ?? 0)
+        ];
+        
+        if (count($proxyParts) >= 4) {
+            $proxyData['username'] = $proxyParts[2];
+            $proxyData['password'] = $proxyParts[3];
+        }
+        
+        return $proxyData;
+    }
+    
+    /**
+     * Форматирует данные прокси из API в строку
+     * 
+     * @param array $proxyData Данные прокси из API
+     * @return string Строка прокси
+     */
+    private function formatProxy(array $proxyData): string
+    {
+        $proxy = $proxyData['host'] . ':' . $proxyData['port'];
+        
+        if (!empty($proxyData['username']) && !empty($proxyData['password'])) {
+            $proxy .= ':' . $proxyData['username'] . ':' . $proxyData['password'];
+        }
+        
+        return $proxy;
     }
     
     /**
@@ -284,8 +272,7 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
         
         $headers = [
             'Content-Type: application/json',
-            'X-Api-Key: ' . $this->apiKey,
-            'X-User-Id: ' . $this->userId
+            'X-Octo-Api-Token: ' . $this->apiKey
         ];
         
         $ch = curl_init();
@@ -306,7 +293,11 @@ class OctoBrowserAdapter implements BrowserAdapterInterface
         
         curl_close($ch);
         
-        if ($httpCode >= 400) {
+        if ($httpCode === 429) {
+            // Обработка ограничения запросов (rate limit)
+            $retryAfter = 60; // По умолчанию ждем 60 секунд
+            throw new \Exception('Rate limit exceeded. Retry after ' . $retryAfter . ' seconds.');
+        } elseif ($httpCode >= 400) {
             throw new \Exception('HTTP Error: ' . $httpCode);
         }
         
