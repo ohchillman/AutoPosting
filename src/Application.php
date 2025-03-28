@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Controllers\AutomationController;
+use App\Controllers\SettingsController;
 
 /**
  * Основной класс приложения
@@ -14,38 +15,56 @@ class Application
      */
     public function run()
     {
-        // Обработка запроса
-        $uri = $_SERVER['REQUEST_URI'];
-        $method = $_SERVER['REQUEST_METHOD'];
+        // Получаем текущий путь из URL
+        $path = $_SERVER['REQUEST_URI'] ?? '/';
+        $path = parse_url($path, PHP_URL_PATH);
         
-        // Маршрутизация
-        if ($uri === '/' || $uri === '') {
-            $controller = new AutomationController();
-            echo $controller->index();
-        } elseif ($uri === '/automation/run' && $method === 'POST') {
-            $controller = new AutomationController();
-            echo $controller->run($_POST);
-        } else {
+        // Получаем параметры запроса
+        $params = $_POST ?: $_GET;
+        
+        // Маршрутизация запросов
+        switch (true) {
+            // Главная страница
+            case $path === '/':
+                $controller = new AutomationController();
+                echo $controller->index();
+                break;
+                
+            // Страница настроек
+            case $path === '/settings':
+                $controller = new SettingsController();
+                echo $controller->index();
+                break;
+                
+            // Сохранение настроек
+            case $path === '/settings/save':
+                $controller = new SettingsController();
+                echo $controller->save($params);
+                break;
+                
+            // Тестирование настроек
+            case $path === '/settings/test':
+                $controller = new SettingsController();
+                echo $controller->test();
+                break;
+                
+            // Запуск автоматизации
+            case $path === '/automation/run':
+                $controller = new AutomationController();
+                echo $controller->run($params);
+                break;
+                
+            // Проверка статуса системы
+            case $path === '/automation/status':
+                $controller = new AutomationController();
+                echo $controller->status();
+                break;
+                
             // Страница не найдена
-            header('HTTP/1.0 404 Not Found');
-            echo '<!DOCTYPE html>
-<html lang="ru">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Страница не найдена</title>
-    <link rel="stylesheet" href="/vendor/bootstrap.min.css">
-</head>
-<body>
-    <div class="container mt-5">
-        <div class="alert alert-danger">
-            <h1>404 - Страница не найдена</h1>
-            <p>Запрашиваемая страница не существует.</p>
-            <a href="/" class="btn btn-primary">Вернуться на главную</a>
-        </div>
-    </div>
-</body>
-</html>';
+            default:
+                header('HTTP/1.0 404 Not Found');
+                echo '404 Not Found';
+                break;
         }
     }
 }

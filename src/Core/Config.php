@@ -11,18 +11,26 @@ class Config
 {
     private static $instance = null;
     private $config = [];
+    private $settingsManager = null;
 
     /**
      * Приватный конструктор для реализации паттерна Singleton
      */
     private function __construct()
     {
-        // Загрузка переменных окружения
+        // Загрузка переменных окружения для обратной совместимости
         $dotenv = Dotenv::createImmutable(__DIR__ . '/../../config');
         $dotenv->load();
         
-        // Инициализация конфигурации
-        $this->loadConfig();
+        // Инициализация менеджера настроек
+        try {
+            $this->settingsManager = new SettingsManager();
+            // Загрузка настроек из базы данных через менеджер настроек
+            $this->config = $this->settingsManager->getAllSettings();
+        } catch (\Exception $e) {
+            // Если не удалось инициализировать менеджер настроек, используем только .env
+            $this->loadConfigFromEnv();
+        }
     }
 
     /**
@@ -40,8 +48,9 @@ class Config
 
     /**
      * Загрузка конфигурации из переменных окружения
+     * Используется только если не удалось инициализировать менеджер настроек
      */
-    private function loadConfig()
+    private function loadConfigFromEnv()
     {
         // Общие настройки
         $this->config['app'] = [
@@ -121,19 +130,89 @@ class Config
      */
     public function get($key, $default = null)
     {
+        // Если доступен менеджер настроек, используем его
+        if ($this->settingsManager !== null) {
+            return $this->settingsManager->get($key, $default);
+        }
+        
+        // Иначе используем локальный кэш настроек
         $keys = explode('.', $key);
         
         if (count($keys) === 1) {
             return $this->config[$keys[0]] ?? $default;
         }
         
-        $section = $keys[0];
-        $subKey = $keys[1];
+        if (count($keys) === 2) {
+            $section = $keys[0];
+            $subKey = $keys[1];
+            
+            if (isset($this->config[$section][$subKey])) {
+                return $this->config[$section][$subKey];
+            }
+        }
         
-        if (isset($this->config[$section][$subKey])) {
-            return $this->config[$section][$subKey];
+        if (count($keys) === 3) {
+            $section = $keys[0];
+            $subSection = $keys[1];
+            $subKey = $keys[2];
+            
+            if (isset($this->config[$section][$subSection][$subKey])) {
+                return $this->config[$section][$subSection][$subKey];
+            }
         }
         
         return $default;
+    }
+    
+    /**
+     * Сохранение настройки
+     * 
+     * @param string $key Ключ настройки в формате 'section.key' или 'section.subsection.key'
+     * @param mixed $value Значение настройки
+     * @return bool Результат операции
+     */
+    public function set($key, $value): bool
+    {
+        // Если менеджер настроек недоступен, нельзя сохранить настройки
+        if ($this->settingsManager === null) {
+            return false;
+        }
+        
+        $keys = explode('.', $key);
+        
+        if (count($keys) === 2) {
+            // Формат 'section.key'
+            $section = $keys[0];
+            $subKey = $keys[1];
+            
+            return $this->settingsManager->saveSettings($section, [$subKey => $value]);
+        } else if (count($keys) === 3) {
+            // Формат 'section.subsection.key'
+            $section = $keys[0] . '.' . $keys[1];
+            $subKey = $keys[2];
+            
+            return $this->settingsManager->saveSettings($section, [$subKey => $value]);
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Обновление локального кэша настроек
+     * 
+     * @return bool Результат операции
+     */
+    public function refreshSettings(): bool
+    {
+        if ($this->settingsManager === null) {
+            return false;
+        }
+        
+        try {
+            $this->config = $this->settingsManager->getAllSettings();
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
     }
 }
