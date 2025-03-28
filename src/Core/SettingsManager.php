@@ -63,12 +63,12 @@ class SettingsManager
     {
         $sql = "CREATE TABLE IF NOT EXISTS settings (
             id INT AUTO_INCREMENT PRIMARY KEY,
-            section VARCHAR(50) NOT NULL,
-            key_name VARCHAR(100) NOT NULL,
-            value TEXT,
+            setting_group VARCHAR(50) NOT NULL,
+            setting_key VARCHAR(100) NOT NULL,
+            setting_value TEXT,
             created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
             updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            UNIQUE KEY section_key (section, key_name)
+            UNIQUE KEY section_key (setting_group, setting_key)
         )";
         
         try {
@@ -90,13 +90,13 @@ class SettingsManager
             $this->loadSettingsFromEnv();
             
             // Затем загружаем настройки из базы данных, которые перезаписывают настройки из .env
-            $sql = "SELECT section, key_name, value FROM settings";
+            $sql = "SELECT setting_group, setting_key, setting_value FROM settings";
             $stmt = $this->db->query($sql);
             
             while ($row = $stmt->fetch()) {
-                $section = $row['section'];
-                $key = $row['key_name'];
-                $value = $row['value'];
+                $section = $row['setting_group'];
+                $key = $row['setting_key'];
+                $value = $row['setting_value'];
                 
                 // Обработка вложенных секций (например, social.twitter)
                 $sectionParts = explode('.', $section);
