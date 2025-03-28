@@ -84,6 +84,26 @@ class Database
     }
     
     /**
+     * Подготовка SQL-запроса
+     * 
+     * @param string $sql SQL-запрос
+     * @return \PDOStatement|false
+     */
+    public function prepare(string $sql)
+    {
+        try {
+            return $this->connection->prepare($sql);
+        } catch (\PDOException $e) {
+            $this->logger->error('Database prepare statement failed', [
+                'sql' => $sql,
+                'error' => $e->getMessage()
+            ]);
+            
+            return false;
+        }
+    }
+    
+    /**
      * Выполнение SQL-запроса
      * 
      * @param string $sql SQL-запрос
