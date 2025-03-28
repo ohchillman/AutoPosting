@@ -313,6 +313,11 @@ class SettingsManager
      */
     private function saveSettingToDb(string $section, string $key, $value)
     {
+        // Convert arrays to JSON strings before saving
+        if (is_array($value)) {
+            $value = json_encode($value);
+        }
+        
         $sql = "INSERT INTO settings (setting_group, setting_key, setting_value) 
                 VALUES (:section, :key, :value)
                 ON DUPLICATE KEY UPDATE setting_value = :value";
