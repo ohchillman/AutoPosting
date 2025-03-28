@@ -59,6 +59,31 @@ class GenericNewsParser implements NewsParserInterface
     }
     
     /**
+     * Проверка новости на актуальность
+     * 
+     * @param array $news Данные новости
+     * @return bool
+     */
+    public function isRelevant(array $news): bool
+    {
+        // Проверяем, что новость не старше 7 дней
+        if (empty($news['date'])) {
+            return true;
+        }
+        
+        $newsDate = strtotime($news['date']);
+        $weekAgo = time() - (7 * 24 * 60 * 60);
+        
+        $this->logger->info('Checking news relevance', [
+            'title' => $news['title'] ?? 'Unknown',
+            'date' => $news['date'],
+            'is_relevant' => ($newsDate >= $weekAgo)
+        ]);
+        
+        return $newsDate >= $weekAgo;
+    }
+    
+    /**
      * Получение полного содержимого новости
      * 
      * @param string $url URL новости

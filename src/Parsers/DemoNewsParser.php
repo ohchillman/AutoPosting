@@ -53,6 +53,23 @@ class DemoNewsParser implements NewsParserInterface
     }
     
     /**
+     * Проверка новости на актуальность
+     * 
+     * @param array $news Данные новости
+     * @return bool
+     */
+    public function isRelevant(array $news): bool
+    {
+        // Для демонстрационного парсера считаем все новости актуальными
+        $this->logger->info('Checking demo news relevance', [
+            'title' => $news['title'] ?? 'Unknown',
+            'is_relevant' => true
+        ]);
+        
+        return true;
+    }
+    
+    /**
      * Получение полного содержимого новости
      * 
      * @param string $url URL новости
