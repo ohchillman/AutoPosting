@@ -1,11 +1,17 @@
 <?php
-// Точка входа в приложение
-require_once __DIR__ . '/vendor/autoload.php';
 
-// Загрузка конфигурации
-$dotenv = Dotenv\Dotenv::createImmutable(__DIR__);
-$dotenv->safeLoad();
+// Включаем отображение всех ошибок для отладки
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 
-// Запуск приложения
-$app = new App\Application();
+// Настраиваем логирование ошибок
+ini_set('log_errors', 1);
+ini_set('error_log', __DIR__ . '/../logs/app.log');
+
+// Загружаем автозагрузчик Composer
+require __DIR__ . '/../vendor/autoload.php';
+
+// Запускаем приложение
+$app = new \App\Application();
 $app->run();
