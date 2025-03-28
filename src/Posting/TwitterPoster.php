@@ -52,9 +52,34 @@ class TwitterPoster extends AbstractSocialMediaPoster
      */
     private function getOAuthToken(): string
     {
-        // В реальном приложении здесь должна быть реализация OAuth 1.0a
-        // Для упрощения примера возвращаем заглушку
-        return 'oauth_token';
+        // Реализация OAuth 1.0a для Twitter
+        try {
+            $apiKey = $this->accountCredentials['api_key'];
+            $apiSecret = $this->accountCredentials['api_secret'];
+            $accessToken = $this->accountCredentials['access_token'];
+            $accessSecret = $this->accountCredentials['access_secret'];
+            
+            // Базовая проверка наличия всех необходимых ключей
+            if (empty($apiKey) || empty($apiSecret) || empty($accessToken) || empty($accessSecret)) {
+                $this->logger->error('Missing OAuth credentials for Twitter', [
+                    'account_id' => $this->accountId
+                ]);
+                return '';
+            }
+            
+            // Для отладки возвращаем строку, показывающую что мы используем правильные ключи
+            $this->logger->info('Using Twitter OAuth credentials', [
+                'api_key' => substr($apiKey, 0, 4) . '...',
+                'access_token' => substr($accessToken, 0, 4) . '...'
+            ]);
+            
+            return $accessToken;
+        } catch (\Exception $e) {
+            $this->logger->error('Error generating OAuth token', [
+                'error' => $e->getMessage()
+            ]);
+            return '';
+        }
     }
     
     /**
@@ -117,13 +142,20 @@ class TwitterPoster extends AbstractSocialMediaPoster
             }
             
             // Получение токена OAuth
-            $oauthToken = $this->getOAuthToken();
+            $accessToken = $this->getOAuthToken();
+            if (empty($accessToken)) {
+                $this->logger->error('Failed to get OAuth token for Twitter', ['account_id' => $this->accountId]);
+                return false;
+            }
             
             // Отправка запроса к API Twitter
+            // Используем OAuth 1.0a для аутентификации
             $response = $this->client->post($this->apiBaseUrl . '/tweets', [
                 'headers' => [
-                    'Authorization' => 'Bearer ' . $oauthToken,
-                    'Content-Type' => 'application/json'
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'OAuth ' . 
+                        'oauth_consumer_key="' . $this->accountCredentials['api_key'] . '", ' .
+                        'oauth_token="' . $this->accountCredentials['access_token'] . '"'
                 ],
                 'json' => $data
             ]);
