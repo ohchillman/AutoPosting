@@ -106,6 +106,15 @@ class SettingsManager
                     if (!isset($this->settings[$section])) {
                         $this->settings[$section] = [];
                     }
+                    
+                    // Check if the value is a JSON array and decode it
+                    if ($value && $value[0] == '[' && substr($value, -1) == ']') {
+                        $decoded = json_decode($value, true);
+                        if (json_last_error() === JSON_ERROR_NONE) {
+                            $value = $decoded;
+                        }
+                    }
+                    
                     $this->settings[$section][$key] = $value;
                 } else if (count($sectionParts) === 2) {
                     // Вложенная секция (например, social.twitter)
@@ -118,6 +127,14 @@ class SettingsManager
                     
                     if (!isset($this->settings[$mainSection][$subSection])) {
                         $this->settings[$mainSection][$subSection] = [];
+                    }
+                    
+                    // Check if the value is a JSON array and decode it
+                    if ($value && $value[0] == '[' && substr($value, -1) == ']') {
+                        $decoded = json_decode($value, true);
+                        if (json_last_error() === JSON_ERROR_NONE) {
+                            $value = $decoded;
+                        }
                     }
                     
                     $this->settings[$mainSection][$subSection][$key] = $value;
@@ -391,6 +408,11 @@ class SettingsManager
         try {
             $sources = $this->settings['parser']['sources'] ?? [];
             $availableSources = 0;
+            
+            // Ensure $sources is always an array before iteration
+            if (!is_array($sources)) {
+                $sources = [$sources];
+            }
             
             foreach ($sources as $source) {
                 if (empty($source) || $source === 'https://example.com/news') {
